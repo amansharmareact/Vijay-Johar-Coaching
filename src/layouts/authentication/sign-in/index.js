@@ -39,7 +39,7 @@ import axios from "../../../axios";
 import BasicLayout from "layouts/authentication/components/BasicLayout";
 import { navigate } from "react-router-dom";
 import bgImage from "assets/images/signin-bg.jpg";
-import { CircularProgress } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 
 function Basic() {
   const [rememberMe, setRememberMe] = useState(false);
@@ -139,7 +139,11 @@ function Basic() {
           </MDBox>
         </MDBox>
       </Card>
-      {isLoading && <CircularProgress />}
+      {isLoading && (
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <CircularProgress color="primary" />
+        </Box>
+      )}
     </BasicLayout>
   );
 }

@@ -14,6 +14,7 @@ Coded by www.creative-tim.com
 */
 
 import { useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 
 // react-router-dom components
 import { useLocation, NavLink } from "react-router-dom";
@@ -51,7 +52,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();
   const collapseName = location.pathname.replace("/", "");
-
+  const history = useNavigate();
   let textColor = "white";
 
   if (transparentSidenav || (whiteSidenav && !darkMode)) {
@@ -82,11 +83,35 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     return () => window.removeEventListener("resize", handleMiniSidenav);
   }, [dispatch, location]);
 
-  const handleLogout = useCallback(() => {
-    // Clear session or authentication token
-    // For example, remove the token from local storage
-    localStorage.removeItem("authToken");
-  }, []);
+  const handleLogout = async () => {
+    console.log("first");
+    if (window.confirm("Are you sure you want to Logout?")) {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`/user/logout`, {
+          method: "POST",
+          headers: {
+            Authorization: token,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Logout request failed");
+        }
+
+        // If you need to handle response data, you can do it here
+        // const data = await response.json();
+
+        localStorage.removeItem("token");
+
+        history.push("/");
+        history.go(0);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
   const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, key, href, route }) => {
     let returnValue;
