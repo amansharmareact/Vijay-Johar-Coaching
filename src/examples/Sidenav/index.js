@@ -105,7 +105,6 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
         localStorage.removeItem("token");
 
         history.push("/");
-        history.go(0);
       } catch (error) {
         console.log(error);
       }
@@ -164,14 +163,6 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           }
         />
       );
-    } else if (type === "logout") {
-      returnValue = (
-        <MDButton key={key} onClick={handleLogout} fullWidth color="inherit">
-          <MDTypography color={textColor} variant="button">
-            {name}
-          </MDTypography>
-        </MDButton>
-      );
     }
 
     return returnValue;
@@ -215,7 +206,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           >
             <MDTypography variant="h5" fontWeight="medium" color={textColor}>
               {/* {brandName} */}
-              Tanya Solanki
+              Aman Sharma
             </MDTypography>
           </MDBox>
         </MDBox>
