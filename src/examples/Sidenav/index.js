@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // react-router-dom components
@@ -46,13 +46,26 @@ import {
   setTransparentSidenav,
   setWhiteSidenav,
 } from "context";
+import { useDispatch, useSelector } from "react-redux";
 
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();
+  const [email, setEmail] = useState("");
   const collapseName = location.pathname.replace("/", "");
   const history = useNavigate();
+  const userInfo = useSelector((state) => state.userInfo);
+  useEffect(() => {
+    if (userInfo && userInfo.loginData && userInfo.loginData.name) {
+      const nameParts = userInfo.loginData.name.split(" ");
+      const capitalizedParts = nameParts.map(
+        (part) => part.charAt(0).toUpperCase() + part.slice(1)
+      );
+      setEmail(capitalizedParts.join(" "));
+    }
+  }, [userInfo]);
+
   let textColor = "white";
 
   if (transparentSidenav || (whiteSidenav && !darkMode)) {
@@ -192,7 +205,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           {brand && (
             <MDBox
               component="img"
-              src={Dummy}
+              src={userInfo.loginData.image}
               alt="Brand"
               width="3rem"
               height="3rem"
@@ -205,8 +218,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
             sx={(theme) => sidenavLogoLabel(theme, { miniSidenav })}
           >
             <MDTypography variant="h5" fontWeight="medium" color={textColor}>
-              {/* {brandName} */}
-              Aman Sharma
+              {email}
             </MDTypography>
           </MDBox>
         </MDBox>

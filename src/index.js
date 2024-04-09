@@ -27,11 +27,11 @@ import { Provider } from "react-redux";
 import store from "./Redux/store";
 
 root.render(
-  // <Provider store={store}>
-  <BrowserRouter>
-    <MaterialUIControllerProvider>
-      <App />
-    </MaterialUIControllerProvider>
-  </BrowserRouter>
-  // </Provider>
+  <Provider store={store}>
+    <BrowserRouter>
+      <MaterialUIControllerProvider>
+        <App />
+      </MaterialUIControllerProvider>
+    </BrowserRouter>
+  </Provider>
 );

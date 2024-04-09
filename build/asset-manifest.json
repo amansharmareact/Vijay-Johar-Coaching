@@ -1,6 +1,7 @@
 {
   "files": {
-    "main.js": "/static/js/main.36542b43.js",
+    "main.css": "/static/css/main.f029a054.css",
+    "main.js": "/static/js/main.02fdb849.js",
     "static/media/home-decor-3.jpg": "/static/media/home-decor-3.74d13fcbd3c631fc7908.jpg",
     "static/media/home-decor-2.jpg": "/static/media/home-decor-2.b4e5397c9846645ba275.jpg",
     "static/media/home-decor-1.jpg": "/static/media/home-decor-1.05e218fd495ccc65c99d.jpg",
@@ -17,18 +18,18 @@
     "static/media/ivana-square.jpg": "/static/media/ivana-square.f7bc23b269d1d2509c82.jpg",
     "static/media/kal-visuals-square.jpg": "/static/media/kal-visuals-square.3210e28a48ff572ae88b.jpg",
     "static/media/team-4.jpg": "/static/media/team-4.85c82b6e60178804017f.jpg",
-    "static/media/github.svg": "/static/media/github.62a94bc83ef91aadf17b3d66c96048dd.svg",
     "static/media/logo-slack.svg": "/static/media/logo-slack.d8feb9c5b2a92c377e8c5b7a10faabc9.svg",
     "static/media/logo-xd.svg": "/static/media/logo-xd.77e7dd1528183ab292936e4f91241cf0.svg",
     "static/media/logo-invision.svg": "/static/media/logo-invision.f3413d25dc0761bcc615835e48482191.svg",
     "static/media/logo-spotify.svg": "/static/media/logo-spotify.3f055cde07c024fb2b73063b46416f1b.svg",
     "static/media/logo-jira.svg": "/static/media/logo-jira.f9c1ddbe3e751a29bd16580977ade064.svg",
     "static/media/logo-atlassian.svg": "/static/media/logo-atlassian.d92c4f81bb3efbf288b3ef71ce2fbfb0.svg",
-    "static/media/logo-asana.svg": "/static/media/logo-asana.5c9ced4f9006cfb2d4c10f905cf6d310.svg",
     "index.html": "/index.html",
-    "main.36542b43.js.map": "/static/js/main.36542b43.js.map"
+    "main.f029a054.css.map": "/static/css/main.f029a054.css.map",
+    "main.02fdb849.js.map": "/static/js/main.02fdb849.js.map"
   },
   "entrypoints": [
-    "static/js/main.36542b43.js"
+    "static/css/main.f029a054.css",
+    "static/js/main.02fdb849.js"
   ]
 }

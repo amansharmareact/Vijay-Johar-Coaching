@@ -1,9 +1,9 @@
 // Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
-import Tables from "layouts/tables";
-import Billing from "layouts/billing";
+import SurveyList from "layouts/surveylist/index";
 import RTL from "layouts/rtl";
 import Profile from "layouts/profile";
+import ActivePrograms from "layouts/ActivePrograms/index";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 
@@ -25,7 +25,7 @@ const routes = [
     key: "my-surveys",
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/my-surveys",
-    component: <Tables />,
+    component: <SurveyList />,
   },
   {
     type: "collapse",
@@ -33,7 +33,7 @@ const routes = [
     key: "active-programs",
     icon: <Icon fontSize="small">receipt_long</Icon>,
     route: "/active-programs",
-    component: <Billing />,
+    component: <ActivePrograms />,
   },
   // {
   //   type: "collapse",

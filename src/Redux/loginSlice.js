@@ -1,13 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+// Define the initial state
 const initialState = {
   loginData: {
+    message: "",
+    email: "",
+    image: "",
     token: "",
-    coachImg: "",
-    coachName: "",
+    status: null,
   },
 };
-
 export const userInfoSlice = createSlice({
   name: "userInfo",
   initialState,
@@ -18,6 +20,6 @@ export const userInfoSlice = createSlice({
   },
 });
 
+// Export actions and reducer
 export const { saveLoginData } = userInfoSlice.actions;
-
 export default userInfoSlice.reducer;
