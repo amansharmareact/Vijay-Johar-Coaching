@@ -30,13 +30,14 @@ import DataTable from "examples/Tables/DataTable";
 import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 import { useState } from "react";
 // Data
-import SurveyListData from "../surveylist/data/SurveryList.js";
+import SurveyList from "../surveylist/data/SurveryList.js";
 import { Box, CircularProgress, Stack } from "@mui/material";
-
 function Tables() {
-  const { columns: pColumns, rows: pRows } = SurveyListData();
   const [isLoading, setIsLoading] = useState(false);
   const [openAddSurvey, setOpenAddSurvey] = useState(false);
+  const [pre, setPre] = useState("");
+  const [mid, setMid] = useState("");
+  const [post, setPost] = useState("");
   const handleOpenAddSurvey = () => {
     setOpenAddSurvey(true);
   };
@@ -62,6 +63,13 @@ function Tables() {
     event.preventDefault();
     // Handle form submission here
     setIsLoading(true);
+    const formDataValues = Object.values(formData);
+    if (formDataValues.some((value) => value === "")) {
+      toast.error("Please fill in all the fields");
+      setIsLoading(false);
+
+      return; // Exit the function early if any field is empty
+    }
     var url = "http://13.126.178.112:3000/createSurvey";
     try {
       const token = localStorage.getItem("token");
@@ -81,6 +89,7 @@ function Tables() {
         toast.success("Survey Created Successfully");
       }
       setIsLoading(false);
+      setOpenAddSurvey(false);
     } catch (err) {
       setIsLoading(false);
       console.log(err);
@@ -108,7 +117,7 @@ function Tables() {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              height: "70vh",
+              height: "100%",
               width: "100%",
             }}
           >
@@ -143,24 +152,43 @@ function Tables() {
                     </Button>
                     <Button style={{ color: "white", backgroundColor: "#237DEA" }}>All</Button>
 
-                    <Button color="primary" style={{ color: "white", backgroundColor: "#237DEA" }}>
+                    <Button
+                      color="primary"
+                      style={{ color: "white", backgroundColor: "#237DEA" }}
+                      onClick={() => {
+                        setPre("pre");
+                      }}
+                    >
                       Pre Program
                     </Button>
-                    <Button color="primary" style={{ color: "white", backgroundColor: "#237DEA" }}>
+                    <Button
+                      color="primary"
+                      style={{ color: "white", backgroundColor: "#237DEA" }}
+                      onClick={() => {
+                        setMid("mid");
+                      }}
+                    >
                       Mid Program
                     </Button>
-                    <Button color="primary" style={{ color: "white", backgroundColor: "#237DEA" }}>
+                    <Button
+                      color="primary"
+                      style={{ color: "white", backgroundColor: "#237DEA" }}
+                      onClick={() => {
+                        setPost("post");
+                      }}
+                    >
                       Post Program
                     </Button>
                   </Stack>
-                  <MDBox pt={3}>
-                    <DataTable
-                      table={{ columns: pColumns, rows: pRows }}
+                  <MDBox pt={3} style={{ height: "100%" }}>
+                    <SurveyList pre={pre} mid={mid} post={post} />
+                    {/* <DataTable
+                      table={{ columns: columns, rows: rows }}
                       isSorted={false}
                       entriesPerPage={false}
                       showTotalEntries={false}
                       noEndBorder
-                    />
+                    /> */}
                   </MDBox>
                 </Card>
               </Grid>

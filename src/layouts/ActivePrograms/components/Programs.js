@@ -1,25 +1,35 @@
-import { Box, Card, CircularProgress, Grid } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Card, CircularProgress, Grid, Typography, Link, Modal } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import React, { useEffect, useState } from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { SimpleTreeView, SimpleTreeViewRoot } from "@mui/x-tree-view/SimpleTreeView";
+import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
+import IconButton from "@mui/material/IconButton";
+import GetAppIcon from "@mui/icons-material/GetApp";
+import Checkbox from "@mui/material/Checkbox";
+import { FormControlLabel } from "@mui/material";
+import ReactPlayer from "react-player";
+
 const Programs = () => {
   const [courseList, setCourseList] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isCLoading, setCIsLoading] = useState(true);
+
   const [expandedCourseId, setExpandedCourseId] = useState(null);
   const [courseData, setCourseData] = useState([]);
-  const getCourseData = async (values) => {
-    // setLoginValues(values);
-    var url = `http://13.126.178.112:3000/getCoursebyId/${expandedCourseId}`;
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-    try {
-      const token = localStorage.getItem("token");
-      if (expandedCourseId !== null) {
+  useEffect(() => {
+    const getCourseList = async () => {
+      try {
+        setIsLoading(true);
+        const url = "http://13.126.178.112:3000/getAllCourse";
+        const token = localStorage.getItem("token");
         const response = await fetch(url, {
           method: "GET",
           headers: {
@@ -27,125 +37,249 @@ const Programs = () => {
             Authorization: token,
           },
         });
-        const dataa = await response.json();
-        console.log(dataa.data.details);
-        setCourseData(dataa.data.details);
-      }
-    } catch (err) {
-      // setIsLoading(false);
-      // toast.error(`Wrong Email or Password`, {
-      //   position: toast.POSITION.TOP_RIGHT,
-      // });
-    }
-  };
-  const getCourseList = async (values) => {
-    // setLoginValues(values);
-    setIsLoading(true);
-    var url = "http://13.126.178.112:3000/getAllCourse";
+        const data = await response.json();
+        if (data) {
+          setCourseList(data.data);
+        }
+        const timer = setTimeout(() => {
+          setIsLoading(false);
+        }, 600);
 
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-      });
-      const data = await response.json();
-      if (data) {
-        // Redirect or do something after successful login
-        setCourseList(data);
+        return () => clearTimeout(timer);
+      } catch (err) {
+        setIsLoading(false);
       }
-      setIsLoading(false);
-    } catch (err) {
-      setIsLoading(false);
-    }
-  };
-  useEffect(() => {
+    };
+
     getCourseList();
   }, []);
+
   useEffect(() => {
+    const getCourseData = async () => {
+      setCIsLoading(true);
+
+      try {
+        if (expandedCourseId !== null) {
+          const url = `http://13.126.178.112:3000/getCoursebyId/${expandedCourseId}`;
+          const token = localStorage.getItem("token");
+          const response = await fetch(url, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: token,
+            },
+          });
+          const data = await response.json();
+          setCourseData(data.data?.details);
+          const timer = setTimeout(() => {
+            setCIsLoading(false);
+          }, 300);
+
+          return () => clearTimeout(timer);
+        }
+      } catch (err) {
+        setCIsLoading(false);
+      }
+    };
+
     getCourseData();
   }, [expandedCourseId]);
+
+  const handleOpenModal = (videoUrl) => {
+    setSelectedVideo(videoUrl);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedVideo(null);
+    setIsModalOpen(false);
+  };
+
   return (
-    <MDBox mb={3}>
-      <Grid container>
-        {isLoading ? (
+    <Box mb={3}>
+      <Grid container style={{ position: "relative", minHeight: "100vh" }}>
+        {isLoading && (
           <Box
             style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              height: "60vh",
-              width: "100%",
+              backgroundColor: "rgba(255, 255, 255, 0.5)", // Semi-transparent background
+              zIndex: 9999, // Ensure it's above other content
             }}
           >
             <CircularProgress color="primary" size={50} />
           </Box>
-        ) : (
+        )}
+        {!isLoading && (
           <Grid item xs={12} lg={12}>
-            <MDBox p={2}>
-              <MDTypography variant="h3">My Programs</MDTypography>
-            </MDBox>
-            <div>
-              {courseList &&
-                Object.entries(courseList).map((item, index) => (
-                  <Accordion
-                    key={index}
-                    style={{ marginTop: "20px", borderRadius: "10px", backgroundColor: "#C4E4FF" }}
-                    onChange={() => {
-                      setExpandedCourseId(item[1].course_id);
-                    }}
-                  >
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon />}
-                      aria-controls="panel1-content"
-                      id="panel1-header"
+            <Card>
+              <MDBox
+                mx={2}
+                mt={-3}
+                py={3}
+                px={2}
+                variant="gradient"
+                bgColor="info"
+                borderRadius="lg"
+                coloredShadow="info"
+              >
+                <MDTypography variant="h6" color="white">
+                  MY PROGRAMS
+                </MDTypography>
+              </MDBox>
+              <MDBox p={3}>
+                {courseList !== null &&
+                  Object.entries(courseList).map((item, index) => (
+                    <Accordion
+                      key={index}
+                      style={{
+                        marginTop: "20px",
+                        borderRadius: "10px",
+                        backgroundColor: "#C4E4FF",
+                      }}
+                      onChange={() => {
+                        setExpandedCourseId(item[1]?.course_id);
+                      }}
                     >
-                      {item[1].course_name}
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <SimpleTreeView>
-                        {courseData.map((weekData, weekIndex) => (
-                          // <TreeItem
-                          //   key={`week-${weekData}`}
-                          //   nodeId={`week-${weekData}`}
-                          //   label={`Week ${weekData + 1}`}
-                          // >
-                          //   <TreeItem
-                          //     key={`ppt-${weekData}`}
-                          //     nodeId={`ppt-${weekData}`}
-                          //     label={weekData.PPT || "PPT: N/A"}
-                          //   />
-                          //   <TreeItem
-                          //     key={`headings-${weekData}`}
-                          //     nodeId={`headings-${weekData}`}
-                          //     label={`Headings: ${weekData.headings}`}
-                          //   />
-                          //   <TreeItem
-                          //     key={`video-${weekData}`}
-                          //     nodeId={`video-${weekData}`}
-                          //     label={`Video: ${weekData.video || "N/A"}`}
-                          //   />
-                          //   <TreeItem
-                          //     key={`date-${weekData}`}
-                          //     nodeId={`date-${weekData}`}
-                          //     label={`Date: ${weekData.date}`}
-                          //   />
-                          //   <TreeItem
-                          //     key={`time-${weekData}`}
-                          //     nodeId={`time-${weekData}`}
-                          //     label={`Time: ${weekData.time}`}
-                          //   />
-                          // </TreeItem>
-                          <div key={weekIndex}>{weekData.weeks}</div>
-                        ))}
-                      </SimpleTreeView>
-                    </AccordionDetails>
-                  </Accordion>
-                ))}
-            </div>
+                      <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1-content"
+                        id="panel1-header"
+                      >
+                        {item[1].course_name}
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        {isCLoading ? ( // Render loading indicator if isLoading is true
+                          <Box
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              height: "100%",
+                              width: "100%",
+                            }}
+                          >
+                            <CircularProgress color="primary" size={50} />
+                          </Box>
+                        ) : (
+                          <SimpleTreeView>
+                            {/* Render course data if isLoading is false */}
+                            {courseData !== null ? (
+                              courseData.map((weekData, id) => (
+                                <SimpleTreeView key={id}>
+                                  <TreeItem itemId="grid" label={weekData.weeks}>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        width: "100%",
+                                      }}
+                                    >
+                                      <div>
+                                        {weekData.headings && (
+                                          <>
+                                            {JSON.parse(
+                                              weekData.headings.replace(/'/g, '"')
+                                            ).heading.map((heading, index) => (
+                                              <FormControlLabel
+                                                key={index}
+                                                style={{ fontSize: "40px", color: "blue" }}
+                                                control={<Checkbox color="primary" />}
+                                                label={heading}
+                                              />
+                                            ))}
+                                            {JSON.parse(
+                                              weekData.headings.replace(/'/g, '"')
+                                            ).subheading.map((subheading, index) => (
+                                              <FormControlLabel
+                                                key={index}
+                                                control={<Checkbox color="primary" />}
+                                                label={subheading}
+                                              />
+                                            ))}
+                                          </>
+                                        )}
+                                      </div>
+                                      <div
+                                        style={{
+                                          width: "20%",
+                                        }}
+                                      >
+                                        <div style={{}}>
+                                          {weekData.PPT && (
+                                            <Link
+                                              href={weekData.PPT}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              download
+                                            >
+                                              <IconButton color="primary" aria-label="download">
+                                                <GetAppIcon />
+                                              </IconButton>
+                                              {weekData.PPT}
+                                            </Link>
+                                          )}
+                                        </div>
+                                        <div>
+                                          {weekData.video && (
+                                            <Link
+                                              href="#"
+                                              onClick={() => handleOpenModal(weekData.video)}
+                                            >
+                                              {weekData.video}
+                                            </Link>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </TreeItem>
+                                </SimpleTreeView>
+                              ))
+                            ) : (
+                              <>
+                                {Object.keys(courseList).length === 0 && !isLoading && (
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      alignItems: "center",
+                                      width: "100%",
+                                      height: "50vh",
+                                    }}
+                                  >
+                                    <h2>No Course Found</h2>
+                                  </div>
+                                )}
+                              </>
+                            )}
+                          </SimpleTreeView>
+                        )}
+                      </AccordionDetails>
+                    </Accordion>
+                  ))}
+              </MDBox>
+
+              <Modal open={isModalOpen} onClose={handleCloseModal}>
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    bgcolor: "background.paper",
+                    boxShadow: 24,
+                  }}
+                >
+                  <ReactPlayer url={selectedVideo} controls={true} width="100%" height="100%" />
+                </Box>
+              </Modal>
+            </Card>
           </Grid>
         )}
         {Object.keys(courseList).length === 0 && !isLoading && (
@@ -162,7 +296,7 @@ const Programs = () => {
           </div>
         )}
       </Grid>
-    </MDBox>
+    </Box>
   );
 };
 
