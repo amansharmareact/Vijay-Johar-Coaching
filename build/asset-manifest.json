@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.a80491fc.css",
-    "main.js": "/static/js/main.81d741a5.js",
+    "main.css": "/static/css/main.d4d06bf1.css",
+    "main.js": "/static/js/main.9d8566cb.js",
     "reactPlayerYouTube.js": "/static/js/reactPlayerYouTube.d2d382c5.chunk.js",
     "reactPlayerSoundCloud.js": "/static/js/reactPlayerSoundCloud.70478ff4.chunk.js",
     "reactPlayerVimeo.js": "/static/js/reactPlayerVimeo.27ab3a0e.chunk.js",
@@ -39,8 +39,8 @@
     "static/media/logo-jira.svg": "/static/media/logo-jira.f9c1ddbe3e751a29bd16580977ade064.svg",
     "static/media/logo-atlassian.svg": "/static/media/logo-atlassian.d92c4f81bb3efbf288b3ef71ce2fbfb0.svg",
     "index.html": "/index.html",
-    "main.a80491fc.css.map": "/static/css/main.a80491fc.css.map",
-    "main.81d741a5.js.map": "/static/js/main.81d741a5.js.map",
+    "main.d4d06bf1.css.map": "/static/css/main.d4d06bf1.css.map",
+    "main.9d8566cb.js.map": "/static/js/main.9d8566cb.js.map",
     "reactPlayerYouTube.d2d382c5.chunk.js.map": "/static/js/reactPlayerYouTube.d2d382c5.chunk.js.map",
     "reactPlayerSoundCloud.70478ff4.chunk.js.map": "/static/js/reactPlayerSoundCloud.70478ff4.chunk.js.map",
     "reactPlayerVimeo.27ab3a0e.chunk.js.map": "/static/js/reactPlayerVimeo.27ab3a0e.chunk.js.map",
@@ -57,7 +57,7 @@
     "reactPlayerPreview.09410b96.chunk.js.map": "/static/js/reactPlayerPreview.09410b96.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.a80491fc.css",
-    "static/js/main.81d741a5.js"
+    "static/css/main.d4d06bf1.css",
+    "static/js/main.9d8566cb.js"
   ]
 }

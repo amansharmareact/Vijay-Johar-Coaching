@@ -101,7 +101,6 @@ export default function App() {
       if (route.collapse) {
         return getRoutes(route.collapse);
       }
-
       if (route.route) {
         return <Route exact path={route.route} element={route.component} key={route.key} />;
       }
@@ -132,6 +131,11 @@ export default function App() {
       </Icon>
     </MDBox>
   );
+  const isAuthenticated = () => {
+    // Implement your authentication logic here
+    const token = localStorage.getItem("token");
+    return !!token; // Example logic, adjust as needed
+  };
 
   return direction === "rtl" ? (
     <CacheProvider value={rtlCache}>

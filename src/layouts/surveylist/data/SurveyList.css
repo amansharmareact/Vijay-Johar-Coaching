@@ -13,12 +13,12 @@
     background-color: #f2f2f2;
     font-weight: bold;
   }
-  
-  .survey-table tr:nth-child(even) {
-    background-color: #f2f2f2;
+
+  .table-data{
+    width: 100px;
+    text-align: center;
   }
-  
-  .survey-table tr:hover {
-    background-color: #ddd;
+  .table-dataa{
+    text-align: center;
   }
   

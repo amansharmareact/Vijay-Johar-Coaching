@@ -94,7 +94,11 @@ const Programs = () => {
     setSelectedVideo(null);
     setIsModalOpen(false);
   };
-
+  const sortedCourseData = courseData.sort((a, b) => {
+    const weekA = parseInt(a.weeks.split(" ")[1]);
+    const weekB = parseInt(b.weeks.split(" ")[1]);
+    return weekA - weekB;
+  });
   return (
     <Box mb={3}>
       <Grid container style={{ position: "relative", minHeight: "100vh" }}>
@@ -129,19 +133,19 @@ const Programs = () => {
                 borderRadius="lg"
                 coloredShadow="info"
               >
-                <MDTypography variant="h6" color="white">
+                <MDTypography variant="h6" backgroundColor="#1692B4" color="white">
                   MY PROGRAMS
                 </MDTypography>
               </MDBox>
               <MDBox p={3}>
-                {courseList !== null &&
+                {(courseList !== null || courseList.length <= 0) &&
                   Object.entries(courseList).map((item, index) => (
                     <Accordion
                       key={index}
                       style={{
                         marginTop: "20px",
                         borderRadius: "10px",
-                        backgroundColor: "#C4E4FF",
+                        backgroundColor: "#C8F3F9",
                       }}
                       onChange={() => {
                         setExpandedCourseId(item[1]?.course_id);
@@ -170,8 +174,8 @@ const Programs = () => {
                         ) : (
                           <SimpleTreeView>
                             {/* Render course data if isLoading is false */}
-                            {courseData !== null ? (
-                              courseData.map((weekData, id) => (
+                            {sortedCourseData !== null || sortedCourseData.length <= 0 ? (
+                              sortedCourseData.map((weekData, id) => (
                                 <SimpleTreeView key={id}>
                                   <TreeItem itemId="grid" label={weekData.weeks}>
                                     <div
@@ -179,30 +183,38 @@ const Programs = () => {
                                         display: "flex",
                                         justifyContent: "space-between",
                                         width: "100%",
+                                        padding: "0px 60px",
                                       }}
                                     >
                                       <div>
+                                        {console.log(JSON.parse(weekData.headings))}
                                         {weekData.headings && (
                                           <>
-                                            {JSON.parse(
-                                              weekData.headings.replace(/'/g, '"')
-                                            ).heading.map((heading, index) => (
-                                              <FormControlLabel
-                                                key={index}
-                                                style={{ fontSize: "40px", color: "blue" }}
-                                                control={<Checkbox color="primary" />}
-                                                label={heading}
-                                              />
-                                            ))}
-                                            {JSON.parse(
-                                              weekData.headings.replace(/'/g, '"')
-                                            ).subheading.map((subheading, index) => (
-                                              <FormControlLabel
-                                                key={index}
-                                                control={<Checkbox color="primary" />}
-                                                label={subheading}
-                                              />
-                                            ))}
+                                            {weekData.headings && (
+                                              <>
+                                                {weekData.headings.heading &&
+                                                  weekData.headings.heading.map(
+                                                    (heading, index) => (
+                                                      <FormControlLabel
+                                                        key={index}
+                                                        style={{ fontSize: "40px", color: "blue" }}
+                                                        control={<Checkbox color="primary" />}
+                                                        label={heading}
+                                                      />
+                                                    )
+                                                  )}
+                                                {weekData.headings.subheading &&
+                                                  JSON.parse(weekData.headings.subheading).map(
+                                                    (subheading, index) => (
+                                                      <FormControlLabel
+                                                        key={index}
+                                                        control={<Checkbox color="primary" />}
+                                                        label={subheading}
+                                                      />
+                                                    )
+                                                  )}
+                                              </>
+                                            )}
                                           </>
                                         )}
                                       </div>
@@ -212,19 +224,21 @@ const Programs = () => {
                                         }}
                                       >
                                         <div style={{}}>
-                                          {weekData.PPT && (
-                                            <Link
-                                              href={weekData.PPT}
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                              download
-                                            >
-                                              <IconButton color="primary" aria-label="download">
-                                                <GetAppIcon />
-                                              </IconButton>
-                                              {weekData.PPT}
-                                            </Link>
-                                          )}
+                                          {/* {console.log(weekData)} */}
+                                          {weekData.PPT !== undefined &&
+                                            weekData.PPT !== "undefined" && (
+                                              <Link
+                                                href={weekData.PPT}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                download
+                                              >
+                                                <IconButton color="primary" aria-label="download">
+                                                  <GetAppIcon />
+                                                </IconButton>
+                                                {weekData.PPT}
+                                              </Link>
+                                            )}
                                         </div>
                                         <div>
                                           {weekData.video && (

@@ -1,19 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import { TextField, Button, MenuItem, Select, FormControl, InputLabel } from "@mui/material";
@@ -21,19 +5,22 @@ import { toast, ToastContainer } from "react-toastify";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-
+import Modal from "@mui/material/Modal";
+import EditIcon from "@mui/icons-material/Edit";
+import Typography from "@mui/material/Typography";
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import DataTable from "examples/Tables/DataTable";
+import "./data/SurveyList.css";
+
 import { Dialog, DialogContent, DialogTitle } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // Data
-import SurveyList from "../surveylist/data/SurveryList.js";
 import { Box, CircularProgress, Stack } from "@mui/material";
 function Tables() {
   const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState([]);
   const [openAddSurvey, setOpenAddSurvey] = useState(false);
   const [pre, setPre] = useState("");
   const [mid, setMid] = useState("");
@@ -58,7 +45,42 @@ function Tables() {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
+  const [error, setError] = useState(null);
+  const [modal, setModal] = useState(false);
+  const [selectedSurveyId, setSelectedSurveyId] = useState(null);
+  const [surveyName, setSurveyName] = useState("");
+  const handleSaveSurveyName = async () => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://13.126.178.112:3000/updateSurveyById/${selectedSurveyId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
 
+          body: JSON.stringify({ survey_name: surveyName }),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      toast.success("Survey Name Updated Successfully");
+      setIsLoading(false);
+      setModal(false);
+      const timer = setTimeout(() => {
+        fetchData();
+      }, 200); // Fetch data after one second
+
+      return () => clearTimeout(timer);
+    } catch (error) {
+      setError(error.message);
+      setIsLoading(false);
+    }
+  };
   const handleSubmit = async (event) => {
     event.preventDefault();
     // Handle form submission here
@@ -82,7 +104,6 @@ function Tables() {
         body: JSON.stringify(formData),
       });
       const data = await response.json();
-      console.log(data.status);
       if (data.status !== 200) {
         toast.error("Create a Valid Survey");
       } else {
@@ -95,7 +116,31 @@ function Tables() {
       console.log(err);
     }
   };
-
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://13.126.178.112:3000/getAllSurvey/Mid", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      const responseData = await response.json();
+      setData(responseData.data || []);
+      setIsLoading(false);
+    } catch (error) {
+      setError(error.message);
+      setIsLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
   const handleReset = () => {
     setFormData({
       organisation_name: "",
@@ -138,7 +183,7 @@ function Tables() {
                     borderRadius="lg"
                     coloredShadow="info"
                   >
-                    <MDTypography variant="h6" color="white">
+                    <MDTypography variant="h6" color="white" backgroundColor="#1692B4">
                       SURVEY LIST
                     </MDTypography>
                   </MDBox>
@@ -150,11 +195,14 @@ function Tables() {
                     >
                       Create Survey
                     </Button>
-                    <Button style={{ color: "white", backgroundColor: "#237DEA" }}>All</Button>
+                    <Button color="warning" style={{ color: "black" }} variant="contained">
+                      All
+                    </Button>
 
                     <Button
-                      color="primary"
-                      style={{ color: "white", backgroundColor: "#237DEA" }}
+                      color="warning"
+                      variant="contained"
+                      style={{ color: "black" }}
                       onClick={() => {
                         setPre("pre");
                       }}
@@ -162,8 +210,9 @@ function Tables() {
                       Pre Program
                     </Button>
                     <Button
-                      color="primary"
-                      style={{ color: "white", backgroundColor: "#237DEA" }}
+                      color="warning"
+                      variant="contained"
+                      style={{ color: "black" }}
                       onClick={() => {
                         setMid("mid");
                       }}
@@ -171,8 +220,9 @@ function Tables() {
                       Mid Program
                     </Button>
                     <Button
-                      color="primary"
-                      style={{ color: "white", backgroundColor: "#237DEA" }}
+                      color="warning"
+                      variant="contained"
+                      style={{ color: "black" }}
                       onClick={() => {
                         setPost("post");
                       }}
@@ -181,14 +231,151 @@ function Tables() {
                     </Button>
                   </Stack>
                   <MDBox pt={3} style={{ height: "100%" }}>
-                    <SurveyList pre={pre} mid={mid} post={post} />
-                    {/* <DataTable
-                      table={{ columns: columns, rows: rows }}
-                      isSorted={false}
-                      entriesPerPage={false}
-                      showTotalEntries={false}
-                      noEndBorder
-                    /> */}
+                    <div style={{ marginBottom: "16px" }}>
+                      <ToastContainer />
+
+                      {isLoading ? (
+                        <div style={{ textAlign: "center" }}>
+                          <CircularProgress />
+                        </div>
+                      ) : (
+                        <table className="survey-table">
+                          <thead>
+                            <tr>
+                              <th className="table-data">Survey Name</th>
+                              <th className="table-data">Survey Type</th>
+                              <th className="table-data">Organization Name</th>
+                              <th className="table-data">Participants</th>
+                              <th className="table-data">Created On</th>
+                              <th className="table-data">Submission Count</th>
+                              <th className="table-data">Status</th>
+                              <th className="table-data">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {data.map((survey) => (
+                              <tr key={survey.id}>
+                                <td className="table-dataa">{survey.survey_name}</td>
+                                <td className="table-dataa">{survey.survey_type}</td>
+                                <td className="table-dataa">{survey.organisation_name}</td>
+                                <td className="table-dataa">{survey.Max_no_of_participants}</td>
+                                <td className="table-dataa">{survey.start_survey_date}</td>
+                                <td className="table-dataa">{survey.survey_questions}</td>
+                                <td className="table-dataa">{survey.language}</td>
+                                <td
+                                  style={{
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  {" "}
+                                  <Button
+                                    variant="contained"
+                                    color="primary"
+                                    style={{
+                                      marginRight: 10,
+                                      width: "150px",
+                                      color: "white",
+                                      marginBottom: 10,
+                                      backgroundColor: "#237DEA",
+                                      fontWeight: "800",
+                                      fontSize: "10px",
+                                      lineHeight: "1px",
+                                    }}
+                                  >
+                                    Generate Report
+                                  </Button>
+                                  {/* Feedback Details Button */}
+                                  <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    style={{
+                                      marginRight: 10,
+                                      width: "100px",
+                                      color: "white",
+                                      marginBottom: 10,
+                                      backgroundColor: "#237DEA",
+                                      fontWeight: "800",
+                                      fontSize: "10px",
+                                    }}
+                                  >
+                                    Feedback Details
+                                  </Button>
+                                  {/* Edit Button with Icon */}
+                                  <Button
+                                    variant="contained"
+                                    color="warning"
+                                    style={{
+                                      marginRight: 10,
+                                      width: "80px",
+                                      color: "black",
+                                      marginBottom: 10,
+                                      fontWeight: "800",
+                                      fontSize: "10px",
+                                      lineHeight: "1px",
+                                    }}
+                                    onClick={() => {
+                                      setSelectedSurveyId(survey.id);
+                                      setModal(true);
+                                      console.log(survey);
+                                    }}
+                                  >
+                                    <EditIcon /> Edit
+                                  </Button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                          <Modal open={modal} onClose={() => setModal(false)}>
+                            <Box
+                              sx={{
+                                position: "absolute",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                                width: 400,
+                                bgcolor: "background.paper",
+                                boxShadow: 24,
+                                p: 4,
+                                borderRadius: "15px",
+                              }}
+                            >
+                              <Typography variant="h6" component="h2" gutterBottom>
+                                Edit Survey Name
+                              </Typography>
+                              <TextField
+                                label="Survey Name"
+                                variant="outlined"
+                                value={surveyName}
+                                onChange={(e) => setSurveyName(e.target.value)}
+                                fullWidth
+                                autoFocus
+                                style={{ marginTop: "20px" }}
+                              />
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleSaveSurveyName}
+                                style={{
+                                  marginRight: 10,
+                                  width: "100px",
+                                  color: "white",
+                                  marginBottom: 10,
+                                  backgroundColor: "#237DEA",
+                                  fontWeight: "800",
+                                  fontSize: "12px",
+                                  marginTop: "20px",
+                                }}
+                              >
+                                Save
+                              </Button>
+                            </Box>
+                          </Modal>
+                        </table>
+                      )}
+                    </div>
                   </MDBox>
                 </Card>
               </Grid>
@@ -225,6 +412,7 @@ function Tables() {
                   value={formData.organisation_name}
                   onChange={handleChange}
                   margin="normal"
+                  style={{ height: "42px" }}
                 />
                 <TextField
                   fullWidth
@@ -234,6 +422,7 @@ function Tables() {
                   value={formData.surveyStartDate}
                   onChange={handleChange}
                   margin="normal"
+                  style={{ height: "42px" }}
                   InputLabelProps={{
                     shrink: true,
                   }}
@@ -245,6 +434,7 @@ function Tables() {
                   value={formData.survey_name}
                   onChange={handleChange}
                   margin="normal"
+                  style={{ height: "42px" }}
                 />
                 <TextField
                   fullWidth
@@ -254,6 +444,7 @@ function Tables() {
                   value={formData.Max_no_of_participants}
                   onChange={handleChange}
                   margin="normal"
+                  style={{ height: "42px" }}
                 />
                 <FormControl fullWidth margin="normal" style={{ height: "42px" }}>
                   <InputLabel id="language-label" style={{ fontSize: "14px", height: "42px" }}>
