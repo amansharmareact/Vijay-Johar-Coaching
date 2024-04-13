@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.d4d06bf1.css",
-    "main.js": "/static/js/main.9d8566cb.js",
+    "main.js": "/static/js/main.c2a2d24e.js",
     "reactPlayerYouTube.js": "/static/js/reactPlayerYouTube.d2d382c5.chunk.js",
     "reactPlayerSoundCloud.js": "/static/js/reactPlayerSoundCloud.70478ff4.chunk.js",
     "reactPlayerVimeo.js": "/static/js/reactPlayerVimeo.27ab3a0e.chunk.js",
@@ -20,7 +20,6 @@
     "static/media/home-decor-2.jpg": "/static/media/home-decor-2.b4e5397c9846645ba275.jpg",
     "static/media/home-decor-1.jpg": "/static/media/home-decor-1.05e218fd495ccc65c99d.jpg",
     "static/media/bg-profile.jpeg": "/static/media/bg-profile.af1219a742e09fc7b612.jpeg",
-    "static/media/bg-sign-up-cover.jpeg": "/static/media/bg-sign-up-cover.30c5950b22e74f0d82ba.jpeg",
     "static/media/signin-bg.jpg": "/static/media/signin-bg.9628187dfa35af8f5e2c.jpg",
     "static/media/dummy-user.jpg": "/static/media/dummy-user.f92e5ecc7edfd2ea035e.jpg",
     "static/media/home-decor-4.jpeg": "/static/media/home-decor-4.5b448fd339a14695f6aa.jpeg",
@@ -40,7 +39,7 @@
     "static/media/logo-atlassian.svg": "/static/media/logo-atlassian.d92c4f81bb3efbf288b3ef71ce2fbfb0.svg",
     "index.html": "/index.html",
     "main.d4d06bf1.css.map": "/static/css/main.d4d06bf1.css.map",
-    "main.9d8566cb.js.map": "/static/js/main.9d8566cb.js.map",
+    "main.c2a2d24e.js.map": "/static/js/main.c2a2d24e.js.map",
     "reactPlayerYouTube.d2d382c5.chunk.js.map": "/static/js/reactPlayerYouTube.d2d382c5.chunk.js.map",
     "reactPlayerSoundCloud.70478ff4.chunk.js.map": "/static/js/reactPlayerSoundCloud.70478ff4.chunk.js.map",
     "reactPlayerVimeo.27ab3a0e.chunk.js.map": "/static/js/reactPlayerVimeo.27ab3a0e.chunk.js.map",
@@ -58,6 +57,6 @@
   },
   "entrypoints": [
     "static/css/main.d4d06bf1.css",
-    "static/js/main.9d8566cb.js"
+    "static/js/main.c2a2d24e.js"
   ]
 }
