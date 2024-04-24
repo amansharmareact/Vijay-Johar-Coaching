@@ -35,7 +35,7 @@ import MDInput from "components/MDInput";
 // Material Dashboard 2 React example components
 import Breadcrumbs from "examples/Breadcrumbs";
 import NotificationItem from "examples/Items/NotificationItem";
-
+import logo from "../../../assets/images/PROGROWTH.png";
 // Custom styles for DashboardNavbar
 import {
   navbar,
@@ -138,7 +138,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
             <MDBox color={light ? "white" : "inherit"}>
               <MDTypography fontWeight="bold">
-                Pro Growth Leadership & Business Coaching
+                <img src={logo} alt="Logo" width={80} />
               </MDTypography>
               {renderMenu()}
             </MDBox>

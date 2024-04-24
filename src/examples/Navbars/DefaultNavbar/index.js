@@ -39,6 +39,7 @@ import breakpoints from "assets/theme/base/breakpoints";
 
 // Material Dashboard 2 React context
 import { useMaterialUIController } from "context";
+import logo from "../../../assets/images/PROGROWTH.png";
 
 function DefaultNavbar({ transparent, light, action }) {
   const [controller] = useMaterialUIController();
@@ -102,15 +103,18 @@ function DefaultNavbar({ transparent, light, action }) {
           backdropFilter: transparent ? "none" : `saturate(200%) blur(30px)`,
         })}
       >
-        <MDBox
-          // component={Link}
-          // to="/"
-          py={transparent ? 1.5 : 0.75}
-          lineHeight={1}
-          pl={{ xs: 0, lg: 1 }}
+        {/* <MDBox
+        // component={Link}
+        // to="/"
+        // py={transparent ? 1.5 : 0.75}
+        // lineHeight={1}
+        // pl={{ xs: 0, lg: 1 }}
         >
-          <MDTypography fontWeight="bold">Pro Growth Leadership & Business Coaching</MDTypography>
-        </MDBox>
+          <MDTypography fontWeight="bold">
+          </MDTypography>
+        </MDBox> */}
+        <img src={logo} alt="Logo" width={80} />
+
         {/* <MDBox color="inherit" display={{ xs: "none", lg: "flex" }} m={0} p={0}>
           <DefaultNavbarLink icon="donut_large" name="dashboard" route="/dashboard" light={light} />
           <DefaultNavbarLink icon="person" name="profile" route="/profile" light={light} />

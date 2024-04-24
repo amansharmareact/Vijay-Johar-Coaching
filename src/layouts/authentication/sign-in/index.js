@@ -61,8 +61,10 @@ function Basic() {
   };
 
   return (
-    <BasicLayout image={bgImage}>
-      <ToastContainer />
+    <BasicLayout image={bgImage} style={{ display: "flex" }}>
+      <Card>
+        <ToastContainer />
+      </Card>
       <Card>
         <MDBox
           variant="gradient"

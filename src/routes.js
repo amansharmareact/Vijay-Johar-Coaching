@@ -8,7 +8,13 @@ import SignIn from "layouts/authentication/sign-in";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
+import ProgramVideos from "layouts/programvideos/ProgramVideos";
+import VideoLibrarySharpIcon from "@mui/icons-material/VideoLibrarySharp";
+import AllPrograms from "layouts/allprograms/AllPrograms";
+import PlayCircleIcon from "@mui/icons-material/PlayCircle";
+import { FaBookmark } from "react-icons/fa";
 
+import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
 const routes = [
   {
     type: "collapse",
@@ -34,15 +40,22 @@ const routes = [
     route: "/active-programs",
     component: <ActivePrograms />,
   },
-  // {
-  //   type: "collapse",
-  //   name: "Archive Programs",
-  //   key: "archive-programs",
-  //   icon: <Icon fontSize="small">format_textdirection_r_to_l</Icon>,
-  //   route: "/archive-programs",
-  //   component: <Notifications />,
-  // },
-
+  {
+    type: "collapse",
+    name: "Program Videos",
+    key: "program-videos",
+    icon: <PlayCircleIcon />,
+    route: "/program-videos",
+    component: <ProgramVideos />,
+  },
+  {
+    type: "collapse",
+    name: "All Programs",
+    key: "all-programs",
+    icon: <FaBookmark />,
+    route: "/all-programs",
+    component: <AllPrograms />,
+  },
   {
     type: "collapse",
     name: "Profile",
@@ -56,7 +69,7 @@ const routes = [
     name: "Logout",
     key: "sign-in",
     icon: <Icon fontSize="small">login</Icon>,
-    route: "/authentication/sign-in",
+    route: "/",
     component: <SignIn />,
   },
 ];

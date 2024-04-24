@@ -13,6 +13,7 @@ import GetAppIcon from "@mui/icons-material/GetApp";
 import Checkbox from "@mui/material/Checkbox";
 import { FormControlLabel } from "@mui/material";
 import ReactPlayer from "react-player";
+import TitleBox from "components/TitleBox";
 
 const Programs = () => {
   const [courseList, setCourseList] = useState({});
@@ -28,9 +29,11 @@ const Programs = () => {
     const getCourseList = async () => {
       try {
         setIsLoading(true);
-        const url = "http://13.126.178.112:3000/getAllCourse";
         const token = localStorage.getItem("token");
-        const response = await fetch(url, {
+        const reduxState = localStorage.getItem("reduxState");
+        const email = JSON.parse(reduxState).loginData.email;
+        console.log(email);
+        const response = await fetch(`http://13.126.178.112:3000/GetAssignCourseofCoach/${email}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -122,21 +125,12 @@ const Programs = () => {
         )}
         {!isLoading && (
           <Grid item xs={12} lg={12}>
+            <TitleBox>
+              <MDTypography variant="h6" color="black" backgroundColor="red">
+                MY PROGRAMS
+              </MDTypography>
+            </TitleBox>
             <Card>
-              <MDBox
-                mx={2}
-                mt={-3}
-                py={3}
-                px={2}
-                variant="gradient"
-                bgColor="info"
-                borderRadius="lg"
-                coloredShadow="info"
-              >
-                <MDTypography variant="h6" backgroundColor="#1692B4" color="white">
-                  MY PROGRAMS
-                </MDTypography>
-              </MDBox>
               <MDBox p={3}>
                 {(courseList !== null || courseList.length <= 0) &&
                   Object.entries(courseList).map((item, index) => (
@@ -187,7 +181,6 @@ const Programs = () => {
                                       }}
                                     >
                                       <div>
-                                        {console.log(JSON.parse(weekData.headings))}
                                         {weekData.headings && (
                                           <>
                                             {weekData.headings && (

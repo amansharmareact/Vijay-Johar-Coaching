@@ -18,13 +18,12 @@ import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 import { useState, useEffect } from "react";
 // Data
 import { Box, CircularProgress, Stack } from "@mui/material";
+import TitleBox from "components/TitleBox";
 function Tables() {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
   const [openAddSurvey, setOpenAddSurvey] = useState(false);
   const [pre, setPre] = useState("");
-  const [mid, setMid] = useState("");
-  const [post, setPost] = useState("");
   const handleOpenAddSurvey = () => {
     setOpenAddSurvey(true);
   };
@@ -117,10 +116,11 @@ function Tables() {
     }
   };
   const fetchData = async () => {
+    console.log(pre);
     setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://13.126.178.112:3000/getAllSurvey/Mid", {
+      const response = await fetch(`http://13.126.178.112:3000/getAllSurvey${pre}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -140,7 +140,7 @@ function Tables() {
   };
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [pre]);
   const handleReset = () => {
     setFormData({
       organisation_name: "",
@@ -169,24 +169,15 @@ function Tables() {
             <CircularProgress color="primary" size={50} />
           </Box>
         ) : (
-          <MDBox pt={6} pb={3}>
+          <MDBox pt={5} pb={3}>
             <Grid container spacing={6}>
               <Grid item xs={12}>
+                <TitleBox>
+                  <MDTypography variant="h6" color="black" backgroundColor="red">
+                    SURVEY LIST
+                  </MDTypography>
+                </TitleBox>
                 <Card>
-                  <MDBox
-                    mx={2}
-                    mt={-3}
-                    py={3}
-                    px={2}
-                    variant="gradient"
-                    bgColor="info"
-                    borderRadius="lg"
-                    coloredShadow="info"
-                  >
-                    <MDTypography variant="h6" color="white" backgroundColor="#1692B4">
-                      SURVEY LIST
-                    </MDTypography>
-                  </MDBox>
                   <Stack spacing={2} pt={3} px={4} direction="row">
                     <Button
                       variant="contained"
@@ -195,7 +186,14 @@ function Tables() {
                     >
                       Create Survey
                     </Button>
-                    <Button color="warning" style={{ color: "black" }} variant="contained">
+                    <Button
+                      color="warning"
+                      style={{ color: "black" }}
+                      variant="contained"
+                      onClick={() => {
+                        setPre("");
+                      }}
+                    >
                       All
                     </Button>
 
@@ -204,7 +202,7 @@ function Tables() {
                       variant="contained"
                       style={{ color: "black" }}
                       onClick={() => {
-                        setPre("pre");
+                        setPre("/Pre");
                       }}
                     >
                       Pre Program
@@ -214,7 +212,7 @@ function Tables() {
                       variant="contained"
                       style={{ color: "black" }}
                       onClick={() => {
-                        setMid("mid");
+                        setPre("/Mid");
                       }}
                     >
                       Mid Program
@@ -224,7 +222,7 @@ function Tables() {
                       variant="contained"
                       style={{ color: "black" }}
                       onClick={() => {
-                        setPost("post");
+                        setPre("/Post");
                       }}
                     >
                       Post Program
@@ -479,7 +477,6 @@ function Tables() {
                     <MenuItem value="post">Post Program</MenuItem>
                   </Select>
                 </FormControl>
-
                 <FormControl fullWidth margin="normal" style={{ height: "42px" }}>
                   <InputLabel id="survey-type-label" style={{ fontSize: "14px", height: "42px" }}>
                     Survey Questions

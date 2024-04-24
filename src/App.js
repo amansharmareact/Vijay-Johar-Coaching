@@ -98,10 +98,14 @@ export default function App() {
 
   const getRoutes = (allRoutes) =>
     allRoutes.map((route) => {
+      // console.log(allRoutes);
       if (route.collapse) {
+        // console.log(route);
         return getRoutes(route.collapse);
       }
       if (route.route) {
+        // console.log(route);
+
         return <Route exact path={route.route} element={route.component} key={route.key} />;
       }
 
@@ -183,7 +187,7 @@ export default function App() {
       {layout === "vr" && <Configurator />}
       <Routes>
         {getRoutes(routes)}
-        <Route path="*" element={<Navigate to="/dashboard" />} />
+        <Route path="/" element={<Navigate to="/dashboard" />} />
       </Routes>
     </ThemeProvider>
   );

@@ -90,7 +90,7 @@ MDTypography.propTypes = {
     "white",
     ,
   ]),
-  backgroundColor: PropTypes.oneOf(["#1692B4", ,]),
+  backgroundColor: PropTypes.oneOf(["red"]),
   fontWeight: PropTypes.oneOf([false, "light", "regular", "medium", "bold"]),
   textTransform: PropTypes.oneOf(["none", "capitalize", "uppercase", "lowercase"]),
   fontSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
