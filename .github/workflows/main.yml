@@ -23,5 +23,6 @@ jobs:
 
               # Now we have got the access of EC2 and we will start the deploy .
                ls
+               git clone https://github.com/amansharmareact/Vijay-Johar-Coaching.git &&
               cd /home/ec2-user/Vijay-Johar-Coaching
               #git checkout dev
