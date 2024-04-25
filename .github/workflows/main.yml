@@ -23,5 +23,5 @@ jobs:
 
               # Now we have got the access of EC2 and we will start the deploy .
                ls
-              #cd /home/ubuntu/<PROJECT_DIRECTORY> &&
+              cd /home/ec2-user/Vijay-Johar-Coaching
               #git checkout dev
