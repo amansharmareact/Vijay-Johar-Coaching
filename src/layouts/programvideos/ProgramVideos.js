@@ -53,7 +53,6 @@ function ProgramVideos() {
         throw new Error("Failed to fetch data");
       }
       const responseData = await response.json();
-      console.log(responseData.data);
       setData(responseData.data || []);
       setIsLoading(false);
     } catch (error) {
@@ -90,18 +89,6 @@ function ProgramVideos() {
                     PROGRAM VIDEOS
                   </MDTypography>
                 </TitleBox>
-
-                {/* <MDBox
-                  mb={2}
-                  py={3}
-                  px={2}
-                  variant="gradient"
-                  bgColor="warning"
-                  borderRadius="lg"
-                  coloredShadow="info"
-                >
-                  
-                </MDBox> */}
                 <Card>
                   <div style={{ margin: "20px 10px" }}>
                     <List>
@@ -112,8 +99,12 @@ function ProgramVideos() {
                               <PlayCircleIcon style={{ color: "#A16205" }} />
                             </ListItemIcon>
                             <div style={{ display: "flex", alignItems: "center" }}>
-                              <KeyboardArrowRightIcon style={{ color: "#000" }} />
-                              <p>{video.title.toUpperCase()}</p>
+                              <KeyboardArrowRightIcon
+                                style={{ color: "#000", marginRight: "5px" }}
+                              />
+                              <p style={{ fontWeight: "500", color: "black", fontSize: "16px" }}>
+                                {video.title.toUpperCase()}
+                              </p>
                             </div>
                           </ListItemButton>
                         </ListItem>

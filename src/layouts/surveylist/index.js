@@ -181,7 +181,7 @@ function Tables() {
                   <Stack spacing={2} pt={3} px={4} direction="row">
                     <Button
                       variant="contained"
-                      style={{ color: "white", backgroundColor: "#237DEA" }}
+                      style={{ color: "white", backgroundColor: "#1692b4" }}
                       onClick={handleOpenAddSurvey}
                     >
                       Create Survey
@@ -277,7 +277,7 @@ function Tables() {
                                       width: "150px",
                                       color: "white",
                                       marginBottom: 10,
-                                      backgroundColor: "#237DEA",
+                                      backgroundColor: "#1692b4",
                                       fontWeight: "800",
                                       fontSize: "10px",
                                       lineHeight: "1px",
@@ -294,7 +294,7 @@ function Tables() {
                                       width: "100px",
                                       color: "white",
                                       marginBottom: 10,
-                                      backgroundColor: "#237DEA",
+                                      backgroundColor: "#1692b4",
                                       fontWeight: "800",
                                       fontSize: "10px",
                                     }}

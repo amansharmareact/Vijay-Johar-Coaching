@@ -62,7 +62,6 @@ function ProgramVideos() {
         throw new Error("Failed to fetch data");
       }
       const responseData = await response.json();
-      console.log(responseData.data);
       setIsLoading(false);
       setData(responseData.data || []);
     } catch (error) {
@@ -133,15 +132,24 @@ function ProgramVideos() {
                             <ListItemIcon>
                               <FaBookmark style={{ color: "#A16205" }} />
                             </ListItemIcon>
-                            <ListItemText primary={resource.title.toUpperCase()} />
-                            <ListItemIcon>
+                            <div
+                              style={{
+                                display: "flex",
+                                width: "100%",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                              }}
+                            >
+                              <div style={{ fontWeight: "500", color: "black", fontSize: "16px" }}>
+                                {resource.title.toUpperCase()}
+                              </div>
                               <div
                                 onClick={() => {
                                   setOpenResourceModal(true);
                                   handleProgramById(resource.id);
                                 }}
                                 style={{
-                                  fontSize: "14px",
+                                  fontSize: "16px",
                                   fontWeight: "800",
                                   color: "gray",
                                   textDecoration: "none",
@@ -159,13 +167,7 @@ function ProgramVideos() {
                               >
                                 Resources
                               </div>
-                              {/* <GrResources
-                                onClick={() => {
-                                  setOpenResourceModal(true);
-                                  handleProgramById(resource.id);
-                                }}
-                              /> */}
-                            </ListItemIcon>
+                            </div>
                           </ListItemButton>
                         </ListItem>
                       ))}
