@@ -14,71 +14,24 @@ import Checkbox from "@mui/material/Checkbox";
 import { FormControlLabel } from "@mui/material";
 import ReactPlayer from "react-player";
 import TitleBox from "components/TitleBox";
+import YouTubeIcon from "@mui/icons-material/YouTube";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { makeStyles } from "@material-ui/core/styles";
-const useStyles = makeStyles((theme) => ({
-  textMiddle: {
-    verticalAlign: "middle !important",
-    textAlign: "center",
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+const useStyles = makeStyles({
+  customTreeItem: {
+    // Add your custom styles here
+    // For example:
+    color: "#1692b4",
   },
-  tablseHeadingCell: {
-    textAlign: "center",
-    fontWeight: "600",
+  MuiSelectedContent: {
+    // Add styles for selected state
+    backgroundColor: "transparent",
   },
-  tablePadding: {
-    padding: "5px",
-    textAlign: "center",
-    fontSize: "0.8rem",
-    fontWeight: "800",
-  },
-  tableContainerHeight: {
-    height: "70vh",
-  },
-  paperTableHeight: {
-    height: "650px",
-    width: "95%",
-    marginLeft: "2rem",
-    display: "flex",
-    justifyContent: "space-between",
-    flexDirection: "column",
-  },
-  "@media (max-width: 780px)": {
-    paperTableHeight: {
-      marginLeft: "0.75rem",
-    },
-    tableContainerHeight: {
-      maxHeight: "64vh",
-    },
-  },
-  "@media (max-width: 968px)": {
-    tableContainerHeight: {
-      maxHeight: "64vh",
-    },
-  },
-  "@media (max-width: 480px)": {
-    paperTableHeight: {
-      marginLeft: "0.75rem",
-    },
-  },
-  tablePaginationStyle: {
-    border: "1px solid #0000001a",
-    borderRadius: "0rem 0rem 0.4rem 0.4rem",
-    overflowY: "hidden",
-  },
-  tableFlex: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  searchDesign: {
-    borderRadius: "20px",
-    boxShadow: "none",
-    width: "21%",
-  },
-}));
+});
 const Programs = () => {
-  // const classes = useStyles();
+  const classes = useStyles();
+  const [isSelected, setIsSelected] = useState(false);
   const [courseList, setCourseList] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [isCLoading, setCIsLoading] = useState(true);
@@ -224,7 +177,7 @@ const Programs = () => {
                       </div>
                     </AccordionSummary>
                     <AccordionDetails>
-                      {isCLoading ? ( // Render loading indicator if isLoading is true
+                      {isCLoading ? (
                         <Box
                           style={{
                             display: "flex",
@@ -244,14 +197,17 @@ const Programs = () => {
                                 <TreeItem
                                   itemId="grid"
                                   label={weekData.weeks}
-                                  // className={classes.colorClass}
+                                  classes={{
+                                    root: classes.customTreeItem,
+                                    content: `${classes.MuiSelectedContent} .css-1xqquov-MuiTreeItem-content`,
+                                  }}
                                 >
                                   <div
                                     style={{
                                       display: "flex",
                                       justifyContent: "space-between",
                                       width: "100%",
-                                      padding: "0px 60px",
+                                      padding: "15px 20px",
                                     }}
                                   >
                                     <div>
@@ -263,32 +219,52 @@ const Programs = () => {
                                                 (heading, index) => (
                                                   <FormControlLabel
                                                     key={index}
-                                                    style={{ fontSize: "40px", color: "blue" }}
-                                                    control={<Checkbox color="primary" />}
-                                                    label={<li key={index}>{heading}</li>}
+                                                    control={
+                                                      <Checkbox
+                                                        style={{ color: "#1692b4" }}
+                                                        onClick={() => {
+                                                          console.log("printttt");
+                                                        }}
+                                                      />
+                                                    }
+                                                    label={
+                                                      <div
+                                                        key={index}
+                                                        style={{
+                                                          fontSize: "18px",
+                                                          color: "#1692b4",
+                                                        }}
+                                                      >
+                                                        {heading}
+                                                      </div>
+                                                    }
                                                   />
                                                 )
                                               )}
                                             </>
                                           )}
-                                          {weekData.headings && (
-                                            <>
-                                              {JSON.parse(
-                                                JSON.parse(weekData.headings).subheading
-                                              ).map((subheading, index) => (
-                                                <div key={index}>{subheading}</div>
-                                              ))}
-                                            </>
-                                          )}
+                                          <div style={{ padding: "10px 30px" }}>
+                                            {weekData.headings && (
+                                              <>
+                                                {JSON.parse(
+                                                  JSON.parse(weekData.headings).subheading
+                                                ).map((subheading, index) => (
+                                                  <div key={index}>{subheading}</div>
+                                                ))}
+                                              </>
+                                            )}
+                                          </div>
                                         </>
                                       )}
                                     </div>
                                     <div
                                       style={{
-                                        width: "20%",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
                                       }}
                                     >
-                                      <div style={{}}>
+                                      <div style={{ textAlign: "center", fontSize: "30px" }}>
                                         {/* {console.log(weekData)} */}
                                         {weekData.PPT !== undefined &&
                                           weekData.PPT !== "undefined" && (
@@ -298,21 +274,21 @@ const Programs = () => {
                                               rel="noopener noreferrer"
                                               download
                                             >
-                                              <IconButton color="primary" aria-label="download">
-                                                <GetAppIcon />
+                                              <IconButton
+                                                aria-label="download"
+                                                style={{ fontSize: "30px" }}
+                                              >
+                                                <PictureAsPdfIcon style={{ color: "#1692b4" }} />
                                               </IconButton>
-                                              {weekData.PPT}
                                             </Link>
                                           )}
                                       </div>
-                                      <div>
+                                      <div style={{ fontSize: "30px", display: "flex" }}>
                                         {weekData.video && (
-                                          <Link
-                                            href="#"
+                                          <YouTubeIcon
                                             onClick={() => handleOpenModal(weekData.video)}
-                                          >
-                                            {weekData.video}
-                                          </Link>
+                                            style={{ color: "#1692b4", cursor: "pointer" }}
+                                          />
                                         )}
                                       </div>
                                     </div>

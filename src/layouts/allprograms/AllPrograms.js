@@ -26,8 +26,19 @@ import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
 import { GrResources } from "react-icons/gr";
 import { FaBookmark } from "react-icons/fa";
 import TitleBox from "components/TitleBox";
+import { makeStyles } from "@material-ui/core/styles";
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+
+  selectedTab: {
+    height: "100%",
+  },
+}));
 function ProgramVideos() {
+  const classes = useStyles();
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(false);
@@ -44,7 +55,7 @@ function ProgramVideos() {
   const [selectedTab, setSelectedTab] = useState("document");
   const [openModal, setOpenModal] = useState(false);
   const [error, setError] = useState(null);
-  const handleTabChange = (event, newValue) => {
+  const handleTabChange = (newValue) => {
     setSelectedTab(newValue);
   };
   const fetchData = async () => {
@@ -192,17 +203,55 @@ function ProgramVideos() {
                           borderRadius: "15px",
                         }}
                       >
-                        <Tabs
+                        <div
                           style={{
-                            background: "#3892EE",
-                            color: "white",
+                            background: "#1692b4",
+                            borderRadius: "30px",
+                            display: "flex",
+                            justifyContent: "center",
                           }}
-                          value={selectedTab}
-                          onChange={handleTabChange}
                         >
-                          <Tab value="document" label="Document" />
-                          <Tab value="video" label="Video" />
-                        </Tabs>
+                          <div
+                            style={{
+                              fontSize: "16px",
+                              textTransform: "uppercase",
+                              fontWeight: "600",
+                              width: "100%",
+                              textAlign: "center",
+                              padding: "10px 20px",
+                              color: selectedTab === "document" ? "white" : "black",
+                              cursor: "pointer",
+                              backgroundColor:
+                                selectedTab === "document"
+                                  ? "rgba(255, 255, 255, 0.3)"
+                                  : "transparent",
+                              borderRadius: "30px 0 0 30px",
+                            }}
+                            onClick={() => handleTabChange("document")}
+                          >
+                            Document
+                          </div>
+                          <div
+                            style={{
+                              fontSize: "16px",
+                              textTransform: "uppercase",
+                              fontWeight: "600",
+                              textAlign: "center",
+                              width: "100%",
+                              padding: "10px 20px",
+                              color: selectedTab === "video" ? "white" : "black",
+                              cursor: "pointer",
+                              backgroundColor:
+                                selectedTab === "video"
+                                  ? "rgba(255, 255, 255, 0.3)"
+                                  : "transparent",
+                              borderRadius: "0 30px 30px 0",
+                            }}
+                            onClick={() => handleTabChange("video")}
+                          >
+                            Video
+                          </div>
+                        </div>
                         {selectedTab === "document" && (
                           <List>
                             {Object.keys(ppt).map(
@@ -210,7 +259,7 @@ function ProgramVideos() {
                                 ppt[key] && (
                                   <ListItem key={key} disablePadding>
                                     <ListItemButton component="a" href={ppt[key]} target="_blank">
-                                      <ListItemText primary={`${key}`} />
+                                      <ListItemText primary={`${key.toUpperCase()}`} />
                                     </ListItemButton>
                                   </ListItem>
                                 )
@@ -229,7 +278,7 @@ function ProgramVideos() {
                                         setOpenModal(true);
                                       }}
                                     >
-                                      <ListItemText primary={`${key}`} />
+                                      <ListItemText primary={`${key.toUpperCase()}`} />
                                     </ListItemButton>
                                   </ListItem>
                                 )

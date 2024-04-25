@@ -1,6 +1,14 @@
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-import { TextField, Button, MenuItem, Select, FormControl, InputLabel } from "@mui/material";
+import {
+  TextField,
+  Button,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  IconButton,
+} from "@mui/material";
 import { toast, ToastContainer } from "react-toastify";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -13,7 +21,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import "./data/SurveyList.css";
-
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 import { useState, useEffect } from "react";
 // Data
@@ -23,10 +31,12 @@ function Tables() {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
   const [openAddSurvey, setOpenAddSurvey] = useState(false);
+  const [surveyLink, setSurveyLink] = useState("");
   const [pre, setPre] = useState("");
   const handleOpenAddSurvey = () => {
     setOpenAddSurvey(true);
   };
+  const [copySuccess, setCopySuccess] = useState(false);
 
   const handleCloseAddSurvey = () => {
     setOpenAddSurvey(false);
@@ -80,8 +90,11 @@ function Tables() {
       setIsLoading(false);
     }
   };
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const [openSurveyLink, setOpenSurveyLink] = useState(false);
+  const handleSubmit = async (e) => {
+    console.log(formData.survey_type);
+    setSurveyLink(formData.survey_type);
+    e.preventDefault();
     // Handle form submission here
     setIsLoading(true);
     const formDataValues = Object.values(formData);
@@ -110,6 +123,7 @@ function Tables() {
       }
       setIsLoading(false);
       setOpenAddSurvey(false);
+      setOpenSurveyLink(true);
     } catch (err) {
       setIsLoading(false);
       console.log(err);
@@ -152,6 +166,9 @@ function Tables() {
       survey_questions: "",
     });
   };
+  useEffect(() => {
+    console.log(surveyLink);
+  });
   return (
     <>
       <DashboardLayout>
@@ -274,7 +291,7 @@ function Tables() {
                                     color="primary"
                                     style={{
                                       marginRight: 10,
-                                      width: "150px",
+                                      width: "190px",
                                       color: "white",
                                       marginBottom: 10,
                                       backgroundColor: "#1692b4",
@@ -297,6 +314,7 @@ function Tables() {
                                       backgroundColor: "#1692b4",
                                       fontWeight: "800",
                                       fontSize: "10px",
+                                      height: "50px",
                                     }}
                                   >
                                     Feedback Details
@@ -313,6 +331,7 @@ function Tables() {
                                       fontWeight: "800",
                                       fontSize: "10px",
                                       lineHeight: "1px",
+                                      height: "50px",
                                     }}
                                     onClick={() => {
                                       setSelectedSurveyId(survey.id);
@@ -361,7 +380,7 @@ function Tables() {
                                   width: "100px",
                                   color: "white",
                                   marginBottom: 10,
-                                  backgroundColor: "#237DEA",
+                                  backgroundColor: "#1692b4",
                                   fontWeight: "800",
                                   fontSize: "12px",
                                   marginTop: "20px",
@@ -369,6 +388,51 @@ function Tables() {
                               >
                                 Save
                               </Button>
+                            </Box>
+                          </Modal>
+                          <Modal open={openAddSurvey} onClose={() => setOpenSurveyLink(false)}>
+                            <Box
+                              sx={{
+                                position: "absolute",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                                width: 400,
+                                bgcolor: "background.paper",
+                                boxShadow: 24,
+                                p: 4,
+                                borderRadius: "15px",
+                              }}
+                            >
+                              <Typography variant="h6" component="h2" gutterBottom>
+                                Survey Form Link
+                              </Typography>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <Typography
+                                  variant="h6"
+                                  component="h2"
+                                  gutterBottom
+                                  style={{ marginBottom: "5px" }}
+                                >
+                                  {surveyLink}
+                                </Typography>
+                                <div>
+                                  <ContentCopyIcon
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => {
+                                      navigator.clipboard.writeText(surveyLink); // Copy the hash value to the clipboard
+                                      setCopySuccess(true); // Set the copy success state to true
+                                      toast.success("Copied Successfully");
+                                    }}
+                                  />
+                                </div>
+                              </div>
                             </Box>
                           </Modal>
                         </table>
@@ -498,7 +562,12 @@ function Tables() {
                   variant="contained"
                   color="primary"
                   type="submit"
-                  style={{ marginRight: "8px", marginTop: "20px", color: "white" }}
+                  style={{
+                    marginRight: "8px",
+                    marginTop: "20px",
+                    color: "white",
+                    background: "#1692b4",
+                  }}
                 >
                   Create Survey
                 </Button>
