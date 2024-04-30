@@ -1,10 +1,9 @@
 // Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
 import SurveyList from "layouts/surveylist/index";
-import RTL from "layouts/rtl";
-import Profile from "layouts/profile";
 import ActivePrograms from "layouts/ActivePrograms/index";
 import SignIn from "layouts/authentication/sign-in";
+import ArchievePrograms from "layouts/ArchievePrograms/index";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -13,7 +12,7 @@ import VideoLibrarySharpIcon from "@mui/icons-material/VideoLibrarySharp";
 import AllPrograms from "layouts/allprograms/AllPrograms";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import { FaBookmark } from "react-icons/fa";
-
+import BeenhereIcon from "@mui/icons-material/Beenhere";
 import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
 const routes = [
   {
@@ -23,6 +22,7 @@ const routes = [
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard",
     component: <Dashboard />,
+    isPrivate: true,
   },
   {
     type: "collapse",
@@ -31,14 +31,25 @@ const routes = [
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/my-surveys",
     component: <SurveyList />,
+    isPrivate: true,
   },
   {
     type: "collapse",
     name: "Active Programs",
     key: "active-programs",
-    icon: <Icon fontSize="small">receipt_long</Icon>,
+    icon: <BeenhereIcon />,
     route: "/active-programs",
     component: <ActivePrograms />,
+    isPrivate: true,
+  },
+  {
+    type: "collapse",
+    name: "Archieve Programs",
+    key: "archieve-programs",
+    icon: <Icon fontSize="small">receipt_long</Icon>,
+    route: "/archieve-programs",
+    component: <ArchievePrograms />,
+    isPrivate: true,
   },
   {
     type: "collapse",
@@ -47,6 +58,7 @@ const routes = [
     icon: <PlayCircleIcon />,
     route: "/program-videos",
     component: <ProgramVideos />,
+    isPrivate: true,
   },
   {
     type: "collapse",
@@ -55,14 +67,7 @@ const routes = [
     icon: <FaBookmark />,
     route: "/all-programs",
     component: <AllPrograms />,
-  },
-  {
-    type: "collapse",
-    name: "Profile",
-    key: "profile",
-    icon: <Icon fontSize="small">person</Icon>,
-    route: "/profile",
-    component: <Profile />,
+    isPrivate: true,
   },
   {
     type: "collapse",

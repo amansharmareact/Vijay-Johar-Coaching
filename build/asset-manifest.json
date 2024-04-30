@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.e2f2b85a.css",
-    "main.js": "/static/js/main.a60a85f5.js",
+    "main.css": "/static/css/main.ed23a972.css",
+    "main.js": "/static/js/main.cdb4b4b7.js",
     "reactPlayerYouTube.js": "/static/js/reactPlayerYouTube.d2d382c5.chunk.js",
     "reactPlayerSoundCloud.js": "/static/js/reactPlayerSoundCloud.70478ff4.chunk.js",
     "reactPlayerVimeo.js": "/static/js/reactPlayerVimeo.27ab3a0e.chunk.js",
@@ -16,22 +16,13 @@
     "reactPlayerKaltura.js": "/static/js/reactPlayerKaltura.9a2d5c7a.chunk.js",
     "reactPlayerFilePlayer.js": "/static/js/reactPlayerFilePlayer.fb7fa7df.chunk.js",
     "reactPlayerPreview.js": "/static/js/reactPlayerPreview.09410b96.chunk.js",
-    "static/media/home-decor-3.jpg": "/static/media/home-decor-3.74d13fcbd3c631fc7908.jpg",
-    "static/media/home-decor-2.jpg": "/static/media/home-decor-2.b4e5397c9846645ba275.jpg",
-    "static/media/home-decor-1.jpg": "/static/media/home-decor-1.05e218fd495ccc65c99d.jpg",
-    "static/media/bg-profile.jpeg": "/static/media/bg-profile.af1219a742e09fc7b612.jpeg",
-    "static/media/signin-bg.png": "/static/media/signin-bg.0a8363ad514d49bbfa72.png",
     "static/media/dummy-user.jpg": "/static/media/dummy-user.f92e5ecc7edfd2ea035e.jpg",
-    "static/media/home-decor-4.jpeg": "/static/media/home-decor-4.5b448fd339a14695f6aa.jpeg",
-    "static/media/PROGROWTH.png": "/static/media/PROGROWTH.64ab6062cb039621986a.png",
     "static/media/bgv.png": "/static/media/bgv.37de1286a22bb6ffac1b.png",
+    "static/media/PROGROWTH.png": "/static/media/PROGROWTH.de0cd1f20d3062c31d8d.png",
+    "static/media/signin-bg.png": "/static/media/signin-bg.de0cd1f20d3062c31d8d.png",
     "static/media/team-1.jpg": "/static/media/team-1.0fd36e0ee93dcfacdef8.jpg",
-    "static/media/bruce-mars.jpg": "/static/media/bruce-mars.8a606c4a6dab54c9ceff.jpg",
-    "static/media/marie.jpg": "/static/media/marie.c28f32663b6432b46f78.jpg",
     "static/media/team-2.jpg": "/static/media/team-2.13ae2ce3e12f4cfed420.jpg",
     "static/media/team-3.jpg": "/static/media/team-3.0ef0be95e6850814c79e.jpg",
-    "static/media/ivana-square.jpg": "/static/media/ivana-square.f7bc23b269d1d2509c82.jpg",
-    "static/media/kal-visuals-square.jpg": "/static/media/kal-visuals-square.3210e28a48ff572ae88b.jpg",
     "static/media/team-4.jpg": "/static/media/team-4.85c82b6e60178804017f.jpg",
     "static/media/logo-slack.svg": "/static/media/logo-slack.d8feb9c5b2a92c377e8c5b7a10faabc9.svg",
     "static/media/logo-xd.svg": "/static/media/logo-xd.77e7dd1528183ab292936e4f91241cf0.svg",
@@ -40,8 +31,8 @@
     "static/media/logo-jira.svg": "/static/media/logo-jira.f9c1ddbe3e751a29bd16580977ade064.svg",
     "static/media/logo-atlassian.svg": "/static/media/logo-atlassian.d92c4f81bb3efbf288b3ef71ce2fbfb0.svg",
     "index.html": "/index.html",
-    "main.e2f2b85a.css.map": "/static/css/main.e2f2b85a.css.map",
-    "main.a60a85f5.js.map": "/static/js/main.a60a85f5.js.map",
+    "main.ed23a972.css.map": "/static/css/main.ed23a972.css.map",
+    "main.cdb4b4b7.js.map": "/static/js/main.cdb4b4b7.js.map",
     "reactPlayerYouTube.d2d382c5.chunk.js.map": "/static/js/reactPlayerYouTube.d2d382c5.chunk.js.map",
     "reactPlayerSoundCloud.70478ff4.chunk.js.map": "/static/js/reactPlayerSoundCloud.70478ff4.chunk.js.map",
     "reactPlayerVimeo.27ab3a0e.chunk.js.map": "/static/js/reactPlayerVimeo.27ab3a0e.chunk.js.map",
@@ -58,7 +49,7 @@
     "reactPlayerPreview.09410b96.chunk.js.map": "/static/js/reactPlayerPreview.09410b96.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.e2f2b85a.css",
-    "static/js/main.a60a85f5.js"
+    "static/css/main.ed23a972.css",
+    "static/js/main.cdb4b4b7.js"
   ]
 }

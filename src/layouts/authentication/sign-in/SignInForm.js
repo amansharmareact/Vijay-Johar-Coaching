@@ -12,7 +12,15 @@ import { useDispatch } from "react-redux";
 import { saveLoginData } from "../../../Redux/loginSlice";
 import "./SignInForm.css";
 import bgImage from "assets/images/signin-bg.png";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme) => ({
+  colorPrimary: {
+    color: "red",
+  },
+}));
 const SignInForm = () => {
+  const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -61,9 +69,7 @@ const SignInForm = () => {
 
   return (
     <div>
-      <Card>
-        <ToastContainer />
-      </Card>
+      <ToastContainer />
       <div
         style={{
           display: "flex",
@@ -73,8 +79,8 @@ const SignInForm = () => {
           width: "100%",
         }}
       >
-        <div style={{ zIndex: "9999", marginLeft: "50px" }}>
-          <img src={bgImage} alt="" width="400px" />
+        <div style={{ zIndex: "9999", marginLeft: "150px" }}>
+          <img src={bgImage} alt="" width="600px" />
         </div>
         <div>
           <div className="background">
@@ -83,7 +89,7 @@ const SignInForm = () => {
           </div>
           <form action="" className="form">
             <div className="form-inner">
-              <h2 style={{ textAlign: "center", color: "#1692b4" }}>LOGIN</h2>
+              <h2 style={{ textAlign: "center", color: "#1692b4", marginBottom: "15px" }}>LOGIN</h2>
               <div className="content">
                 <input
                   className="input"
@@ -101,7 +107,7 @@ const SignInForm = () => {
                 />
                 <button className="glow-on-hover" type="button" onClick={handleLogin}>
                   {isLoading ? (
-                    <CircularProgress color="primary" size={24} /> // Display spinner when loading
+                    <CircularProgress size={24} className={classes.colorPrimary} />
                   ) : (
                     "Sign in"
                   )}

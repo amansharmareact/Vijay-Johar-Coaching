@@ -10,19 +10,20 @@ import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
 import IconButton from "@mui/material/IconButton";
 import GetAppIcon from "@mui/icons-material/GetApp";
-import Checkbox from "@mui/material/Checkbox";
-import { FormControlLabel } from "@mui/material";
+import { FormControlLabel, Checkbox } from "@mui/material";
 import ReactPlayer from "react-player";
 import TitleBox from "components/TitleBox";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { makeStyles } from "@material-ui/core/styles";
+import { LinearProgress } from "@mui/material";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import "./Programs.css";
 const useStyles = makeStyles({
   customTreeItem: {
     // Add your custom styles here
     // For example:
-    color: "#1692b4",
+    color: "#000000",
   },
   MuiSelectedContent: {
     // Add styles for selected state
@@ -39,6 +40,24 @@ const Programs = () => {
   const [courseData, setCourseData] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [progress, setProgress] = React.useState(0);
+
+  // useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     setProgress((oldProgress) => {
+  //       if (oldProgress === 100) {
+  //         return 0;
+  //       }
+  //       const diff = Math.random() * 10;
+  //       return Math.min(oldProgress + diff, 100);
+  //     });
+  //   }, 500);
+
+  //   return () => {
+  //     clearInterval(timer);
+  //   };
+  // }, []);
+  const [truee, setTruee] = useState(false);
 
   useEffect(() => {
     const getCourseList = async () => {
@@ -47,7 +66,6 @@ const Programs = () => {
         const token = localStorage.getItem("token");
         const reduxState = localStorage.getItem("reduxState");
         const email = JSON.parse(reduxState).loginData.email;
-        console.log(email);
         const response = await fetch(`http://13.126.178.112:3000/GetAssignCourseofCoach/${email}`, {
           method: "GET",
           headers: {
@@ -56,9 +74,8 @@ const Programs = () => {
           },
         });
         const data = await response.json();
-        if (data) {
-          setCourseList(data.data);
-        }
+        const activePrograms = data.data.filter((item) => !item.archives);
+        setCourseList(activePrograms);
         const timer = setTimeout(() => {
           setIsLoading(false);
         }, 600);
@@ -68,14 +85,34 @@ const Programs = () => {
         setIsLoading(false);
       }
     };
-
     getCourseList();
   }, []);
+  const trackCourse = async (week, checked) => {
+    setTruee(!truee);
+    try {
+      const reduxState = localStorage.getItem("reduxState");
+      const email = JSON.parse(reduxState).loginData.email;
+      if (expandedCourseId !== null) {
+        const url = `http://13.126.178.112:3000/activeCourse/${email}/${expandedCourseId}/${week}`;
+        const token = localStorage.getItem("token");
+        const response = await fetch(url, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+          body: JSON.stringify({ actives: checked }),
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
-    const getCourseData = async () => {
+    const getCourseData = async (item) => {
       setCIsLoading(true);
-
+      setExpandedCourseId(expandedCourseId === item ? null : item);
       try {
         if (expandedCourseId !== null) {
           const url = `http://13.126.178.112:3000/getCoursebyId/${expandedCourseId}`;
@@ -117,6 +154,17 @@ const Programs = () => {
     const weekB = parseInt(b.weeks.split(" ")[1]);
     return weekA - weekB;
   });
+  const calculateProgress = (weeks) => {
+    if (weeks) {
+      const totalWeeks = weeks.length;
+      const completedWeeks = weeks.filter((week) => week.active).length;
+      console.log((completedWeeks / totalWeeks) * 100);
+      const progress = (completedWeeks / totalWeeks) * 100;
+      console.log(progress);
+      return progress;
+    }
+  };
+  calculateProgress();
   return (
     <Box mb={3}>
       <Grid container style={{ position: "relative", minHeight: "100vh" }}>
@@ -142,7 +190,7 @@ const Programs = () => {
           <Grid item xs={12} lg={12}>
             <TitleBox>
               <MDTypography variant="h6" color="black" backgroundColor="red">
-                MY PROGRAMS
+                ACTIVE PROGRAMS
               </MDTypography>
             </TitleBox>
             <MDBox>
@@ -154,10 +202,12 @@ const Programs = () => {
                       marginTop: "20px",
                       borderRadius: "5px",
                       backgroundColor: "white",
+                      width: "160vh",
                     }}
                     onChange={() => {
                       setExpandedCourseId(item[1]?.course_id);
                     }}
+                    // expanded={expandedCourseId === item[1]?.course_id}
                   >
                     <AccordionSummary
                       expandIcon={<ExpandMoreIcon />}
@@ -169,10 +219,10 @@ const Programs = () => {
                         style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
                       >
                         <CalendarMonthIcon
-                          style={{ marginRight: "10px", color: "#1692b4", fontWeight: "800" }}
+                          style={{ marginRight: "10px", color: "#A16205", fontWeight: "800" }}
                         />
-                        <div style={{ fontWeight: "500", color: "#1692b4", fontSize: "16px" }}>
-                          {item[1].course_name.toUpperCase()}
+                        <div style={{ fontWeight: "500", color: "#00000", fontSize: "16px" }}>
+                          {item[1].course_name !== undefined && item[1].course_name.toUpperCase()}
                         </div>
                       </div>
                     </AccordionSummary>
@@ -193,108 +243,134 @@ const Programs = () => {
                         <SimpleTreeView>
                           {sortedCourseData !== null || sortedCourseData.length <= 0 ? (
                             sortedCourseData.map((weekData, id) => (
-                              <SimpleTreeView key={id}>
-                                <TreeItem
-                                  itemId="grid"
-                                  label={weekData.weeks}
-                                  classes={{
-                                    root: classes.customTreeItem,
-                                    content: `${classes.MuiSelectedContent} .css-1xqquov-MuiTreeItem-content`,
-                                  }}
-                                >
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: "space-between",
-                                      width: "100%",
-                                      padding: "15px 20px",
+                              <>
+                                <SimpleTreeView key={id}>
+                                  <TreeItem
+                                    itemId="grid"
+                                    label={weekData.weeks}
+                                    classes={{
+                                      root: classes.customTreeItem,
+                                      content: `${classes.MuiSelectedContent} .css-1xqquov-MuiTreeItem-content`,
                                     }}
                                   >
-                                    <div>
-                                      {weekData.headings && (
-                                        <>
-                                          {weekData.headings && (
-                                            <>
-                                              {JSON.parse(weekData.headings).heading.map(
-                                                (heading, index) => (
-                                                  <FormControlLabel
-                                                    key={index}
-                                                    control={
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        width: "100%",
+                                        padding: "15px 20px",
+                                      }}
+                                    >
+                                      <div>
+                                        {weekData.headings && (
+                                          <>
+                                            {weekData.headings && (
+                                              <>
+                                                {JSON.parse(weekData.headings).heading.map(
+                                                  (heading, index) => (
+                                                    <div
+                                                      key={index}
+                                                      style={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        justifyContent: "flex-start",
+                                                      }}
+                                                    >
                                                       <Checkbox
-                                                        style={{ color: "#1692b4" }}
-                                                        onClick={() => {
-                                                          console.log("printttt");
+                                                        checked={weekData.active}
+                                                        onChange={(e) => {
+                                                          const newActiveState = e.target.checked;
+                                                          setCourseData((prevCourseData) => {
+                                                            const updatedCourseData =
+                                                              prevCourseData.map((week) =>
+                                                                week.weeks === weekData.weeks
+                                                                  ? {
+                                                                      ...week,
+                                                                      active: newActiveState,
+                                                                    }
+                                                                  : week
+                                                              );
+                                                            return updatedCourseData;
+                                                          });
+                                                          trackCourse(
+                                                            weekData.weeks,
+                                                            newActiveState
+                                                          );
+                                                        }}
+                                                        style={{
+                                                          color: "#000",
+                                                          cursor: "pointer",
+                                                          marginRight: "10px",
                                                         }}
                                                       />
-                                                    }
-                                                    label={
                                                       <div
-                                                        key={index}
                                                         style={{
                                                           fontSize: "18px",
-                                                          color: "#1692b4",
+                                                          color: "#000",
+                                                          display: "inline-block",
+                                                          verticalAlign: "middle",
                                                         }}
                                                       >
                                                         {heading}
                                                       </div>
-                                                    }
-                                                  />
-                                                )
-                                              )}
-                                            </>
-                                          )}
-                                          <div style={{ padding: "10px 30px" }}>
-                                            {weekData.headings && (
-                                              <>
-                                                {JSON.parse(
-                                                  JSON.parse(weekData.headings).subheading
-                                                ).map((subheading, index) => (
-                                                  <div key={index}>{subheading}</div>
-                                                ))}
+                                                    </div>
+                                                  )
+                                                )}
                                               </>
                                             )}
-                                          </div>
-                                        </>
-                                      )}
-                                    </div>
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                      }}
-                                    >
-                                      <div style={{ textAlign: "center", fontSize: "30px" }}>
-                                        {/* {console.log(weekData)} */}
-                                        {weekData.PPT !== undefined &&
-                                          weekData.PPT !== "undefined" && (
-                                            <Link
-                                              href={weekData.PPT}
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                              download
-                                            >
-                                              <IconButton
-                                                aria-label="download"
-                                                style={{ fontSize: "30px" }}
-                                              >
-                                                <PictureAsPdfIcon style={{ color: "#1692b4" }} />
-                                              </IconButton>
-                                            </Link>
-                                          )}
-                                      </div>
-                                      <div style={{ fontSize: "30px", display: "flex" }}>
-                                        {weekData.video && (
-                                          <YouTubeIcon
-                                            onClick={() => handleOpenModal(weekData.video)}
-                                            style={{ color: "#1692b4", cursor: "pointer" }}
-                                          />
+                                            <div style={{ padding: "10px 30px" }}>
+                                              {weekData.headings && (
+                                                <>
+                                                  {JSON.parse(
+                                                    JSON.parse(weekData.headings).subheading
+                                                  ).map((subheading, index) => (
+                                                    <div key={index}>{subheading}</div>
+                                                  ))}
+                                                </>
+                                              )}
+                                            </div>
+                                          </>
                                         )}
                                       </div>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "center",
+                                        }}
+                                      >
+                                        <div style={{ textAlign: "center", fontSize: "30px" }}>
+                                          {/* {console.log(weekData)} */}
+                                          {weekData.PPT !== undefined &&
+                                            weekData.PPT !== "undefined" && (
+                                              <Link
+                                                href={weekData.PPT}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                download
+                                              >
+                                                <IconButton
+                                                  aria-label="download"
+                                                  style={{ fontSize: "30px" }}
+                                                >
+                                                  <PictureAsPdfIcon style={{ color: "#1692b4" }} />
+                                                </IconButton>
+                                              </Link>
+                                            )}
+                                        </div>
+                                        <div style={{ fontSize: "30px", display: "flex" }}>
+                                          {weekData.video && (
+                                            <YouTubeIcon
+                                              onClick={() => handleOpenModal(weekData.video)}
+                                              style={{ color: "#1692b4", cursor: "pointer" }}
+                                            />
+                                          )}
+                                        </div>
+                                      </div>
                                     </div>
-                                  </div>
-                                </TreeItem>
-                              </SimpleTreeView>
+                                  </TreeItem>
+                                </SimpleTreeView>
+                              </>
                             ))
                           ) : (
                             <>
@@ -316,6 +392,16 @@ const Programs = () => {
                         </SimpleTreeView>
                       )}
                     </AccordionDetails>
+                    {/* <LinearProgress
+                      value={calculateProgress(sortedCourseData)}
+                      style={{ width: "160vh", overflow: "hidden" }}
+                    /> */}
+                    <div className="progress-bar">
+                      <div
+                        className="progress"
+                        style={{ width: `${calculateProgress(sortedCourseData)}%` }}
+                      ></div>
+                    </div>
                   </Accordion>
                 ))}
             </MDBox>

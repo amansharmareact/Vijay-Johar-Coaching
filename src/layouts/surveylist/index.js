@@ -198,14 +198,19 @@ function Tables() {
                   <Stack spacing={2} pt={3} px={4} direction="row">
                     <Button
                       variant="contained"
-                      style={{ color: "white", backgroundColor: "#1692b4" }}
+                      style={{
+                        color: "white",
+                        backgroundColor: "#1692b4",
+                        width: "180px",
+                        height: "30px",
+                      }}
                       onClick={handleOpenAddSurvey}
                     >
                       Create Survey
                     </Button>
                     <Button
                       color="warning"
-                      style={{ color: "black" }}
+                      style={{ color: "black", width: "120px", height: "30px" }}
                       variant="contained"
                       onClick={() => {
                         setPre("");
@@ -217,7 +222,7 @@ function Tables() {
                     <Button
                       color="warning"
                       variant="contained"
-                      style={{ color: "black" }}
+                      style={{ color: "black", width: "120px", height: "30px" }}
                       onClick={() => {
                         setPre("/Pre");
                       }}
@@ -227,7 +232,7 @@ function Tables() {
                     <Button
                       color="warning"
                       variant="contained"
-                      style={{ color: "black" }}
+                      style={{ color: "black", width: "120px", height: "30px" }}
                       onClick={() => {
                         setPre("/Mid");
                       }}
@@ -237,7 +242,7 @@ function Tables() {
                     <Button
                       color="warning"
                       variant="contained"
-                      style={{ color: "black" }}
+                      style={{ color: "black", width: "120px", height: "30px" }}
                       onClick={() => {
                         setPre("/Post");
                       }}
@@ -390,51 +395,6 @@ function Tables() {
                               </Button>
                             </Box>
                           </Modal>
-                          <Modal open={openAddSurvey} onClose={() => setOpenSurveyLink(false)}>
-                            <Box
-                              sx={{
-                                position: "absolute",
-                                top: "50%",
-                                left: "50%",
-                                transform: "translate(-50%, -50%)",
-                                width: 400,
-                                bgcolor: "background.paper",
-                                boxShadow: 24,
-                                p: 4,
-                                borderRadius: "15px",
-                              }}
-                            >
-                              <Typography variant="h6" component="h2" gutterBottom>
-                                Survey Form Link
-                              </Typography>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "space-between",
-                                }}
-                              >
-                                <Typography
-                                  variant="h6"
-                                  component="h2"
-                                  gutterBottom
-                                  style={{ marginBottom: "5px" }}
-                                >
-                                  {surveyLink}
-                                </Typography>
-                                <div>
-                                  <ContentCopyIcon
-                                    style={{ cursor: "pointer" }}
-                                    onClick={() => {
-                                      navigator.clipboard.writeText(surveyLink); // Copy the hash value to the clipboard
-                                      setCopySuccess(true); // Set the copy success state to true
-                                      toast.success("Copied Successfully");
-                                    }}
-                                  />
-                                </div>
-                              </div>
-                            </Box>
-                          </Modal>
                         </table>
                       )}
                     </div>
@@ -444,15 +404,14 @@ function Tables() {
             </Grid>
           </MDBox>
         )}
-
         <Footer />
       </DashboardLayout>
-      <Dialog open={openAddSurvey} onClose={handleCloseAddSurvey}>
-        <DialogTitle>Create Survey</DialogTitle>
-        <DialogContent>
-          <>
-            <ToastContainer />
+      <ToastContainer />
 
+      <Dialog open={openAddSurvey} onClose={handleCloseAddSurvey}>
+        <DialogTitle style={{}}>Create Survey</DialogTitle>
+        <DialogContent style={{ minWidth: "80vh", minHeight: "80vh" }}>
+          <>
             {isLoading ? (
               <Box
                 style={{
@@ -474,7 +433,6 @@ function Tables() {
                   value={formData.organisation_name}
                   onChange={handleChange}
                   margin="normal"
-                  style={{ height: "42px" }}
                 />
                 <TextField
                   fullWidth
@@ -484,7 +442,6 @@ function Tables() {
                   value={formData.surveyStartDate}
                   onChange={handleChange}
                   margin="normal"
-                  style={{ height: "42px" }}
                   InputLabelProps={{
                     shrink: true,
                   }}
@@ -496,7 +453,6 @@ function Tables() {
                   value={formData.survey_name}
                   onChange={handleChange}
                   margin="normal"
-                  style={{ height: "42px" }}
                 />
                 <TextField
                   fullWidth
@@ -506,7 +462,6 @@ function Tables() {
                   value={formData.Max_no_of_participants}
                   onChange={handleChange}
                   margin="normal"
-                  style={{ height: "42px" }}
                 />
                 <FormControl fullWidth margin="normal" style={{ height: "42px" }}>
                   <InputLabel id="language-label" style={{ fontSize: "14px", height: "42px" }}>
@@ -541,6 +496,7 @@ function Tables() {
                     <MenuItem value="post">Post Program</MenuItem>
                   </Select>
                 </FormControl>
+
                 <FormControl fullWidth margin="normal" style={{ height: "42px" }}>
                   <InputLabel id="survey-type-label" style={{ fontSize: "14px", height: "42px" }}>
                     Survey Questions
@@ -558,26 +514,33 @@ function Tables() {
                     <MenuItem value="ratingScale">Rating Scale</MenuItem>
                   </Select>
                 </FormControl>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  type="submit"
-                  style={{
-                    marginRight: "8px",
-                    marginTop: "20px",
-                    color: "white",
-                    background: "#1692b4",
-                  }}
-                >
-                  Create Survey
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={handleReset}
-                  style={{ marginTop: "20px", color: "white", backgroundColor: "gray" }}
-                >
-                  Reset
-                </Button>
+                <div style={{ display: "flex", justifyContent: "space-around" }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    style={{
+                      marginRight: "8px",
+                      marginTop: "20px",
+                      color: "white",
+                      width: "180px",
+                    }}
+                  >
+                    Create Survey
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={handleReset}
+                    style={{
+                      marginTop: "20px",
+                      color: "white",
+                      backgroundColor: "gray",
+                      width: "180px",
+                    }}
+                  >
+                    Reset
+                  </Button>
+                </div>
               </form>
             )}
           </>
