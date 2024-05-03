@@ -138,7 +138,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
             <MDBox color={light ? "white" : "inherit"}>
               <MDTypography fontWeight="bold">
-                <img src={logo} alt="Logo" width={80} />
+                <img src={logo} alt="Logo" width={100} />
               </MDTypography>
               {renderMenu()}
             </MDBox>

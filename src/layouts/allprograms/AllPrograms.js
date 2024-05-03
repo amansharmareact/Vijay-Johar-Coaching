@@ -134,7 +134,7 @@ function ProgramVideos() {
                     ALL PROGRAMS
                   </MDTypography>
                 </TitleBox>
-                <Card>
+                <Card style={{ width: "170vh" }}>
                   <div>
                     <List>
                       {data.map((resource) => (

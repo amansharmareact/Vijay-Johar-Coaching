@@ -194,7 +194,7 @@ function Tables() {
                     SURVEY LIST
                   </MDTypography>
                 </TitleBox>
-                <Card>
+                <Card style={{ width: "170vh" }}>
                   <Stack spacing={2} pt={3} px={4} direction="row">
                     <Button
                       variant="contained"

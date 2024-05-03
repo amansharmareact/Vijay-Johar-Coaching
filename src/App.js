@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Icon from "@mui/material/Icon";
@@ -37,7 +37,18 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
-
+  const history = useNavigate();
+  const token = localStorage.getItem("token");
+  useEffect(() => {
+    if (pathname === "/") {
+      localStorage.removeItem("token");
+      localStorage.removeItem("reduxState");
+      history("/");
+    }
+    if (!token) {
+      history("/");
+    }
+  }, [token, history]);
   useMemo(() => {
     const cacheRtl = createCache({
       key: "rtl",
@@ -81,8 +92,6 @@ export default function App() {
       return null;
     });
 
-  const token = localStorage.getItem("token");
-
   const configsButton = (
     <MDBox
       display="flex"
@@ -123,12 +132,12 @@ export default function App() {
               onMouseEnter={handleOnMouseEnter}
               onMouseLeave={handleOnMouseLeave}
             />
-            <Configurator />
+            {/* <Configurator /> */}
             {console.log(layout, "this is layourtt")}
             {configsButton}
           </>
         )}
-        {layout === "vr" && <Configurator />}
+        {/* {layout === "vr" && <Configurator />} */}
 
         <Routes>{token ? getRoutes(routes) : <Route path="/" element={<SignIn />} />}</Routes>
         {/* <Routes>{token && <Route path="/" element={<SignIn />} />}</Routes> */}
@@ -147,15 +156,16 @@ export default function App() {
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
           />
-          <Configurator />
-          {configsButton}
+          {/* <Configurator /> */}
+          {/* {configsButton} */}
         </>
       )}
-      {layout === "vr" && <Configurator />}
+      {/* {layout === "vr" && <Configurator />} */}
       <Routes>{token ? getRoutes(routes) : <Route path="/" element={<SignIn />} />}</Routes>{" "}
       {/* <Routes>
         <Route path="/sign-in" element={<SignIn />} />
       </Routes> */}
+      {console.log(pathname, "this is layout dashboard")}
     </ThemeProvider>
   );
 }

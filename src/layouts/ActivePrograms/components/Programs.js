@@ -40,24 +40,10 @@ const Programs = () => {
   const [courseData, setCourseData] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [progress, setProgress] = React.useState(0);
-
-  // useEffect(() => {
-  //   const timer = setInterval(() => {
-  //     setProgress((oldProgress) => {
-  //       if (oldProgress === 100) {
-  //         return 0;
-  //       }
-  //       const diff = Math.random() * 10;
-  //       return Math.min(oldProgress + diff, 100);
-  //     });
-  //   }, 500);
-
-  //   return () => {
-  //     clearInterval(timer);
-  //   };
-  // }, []);
   const [truee, setTruee] = useState(false);
+  const [accordionOpen, setAccordionOpen] = useState(
+    Array.from({ length: courseList.length }, () => false)
+  );
 
   useEffect(() => {
     const getCourseList = async () => {
@@ -79,7 +65,6 @@ const Programs = () => {
         const timer = setTimeout(() => {
           setIsLoading(false);
         }, 600);
-
         return () => clearTimeout(timer);
       } catch (err) {
         setIsLoading(false);
@@ -112,9 +97,9 @@ const Programs = () => {
   useEffect(() => {
     const getCourseData = async (item) => {
       setCIsLoading(true);
-      setExpandedCourseId(expandedCourseId === item ? null : item);
+      // setExpandedCourseId(expandedCourseId === item ? null : item);
       try {
-        if (expandedCourseId !== null) {
+        if (expandedCourseId !== null && expandedCourseId !== undefined) {
           const url = `http://13.126.178.112:3000/getCoursebyId/${expandedCourseId}`;
           const token = localStorage.getItem("token");
           const response = await fetch(url, {
@@ -158,16 +143,28 @@ const Programs = () => {
     if (weeks) {
       const totalWeeks = weeks.length;
       const completedWeeks = weeks.filter((week) => week.active).length;
-      console.log((completedWeeks / totalWeeks) * 100);
       const progress = (completedWeeks / totalWeeks) * 100;
-      console.log(progress);
       return progress;
     }
   };
-  calculateProgress();
+  useEffect(() => {
+    if (sortedCourseData) {
+      calculateProgress(sortedCourseData);
+    }
+  }, [sortedCourseData]);
+
+  const handleAccordionChange = (index) => {
+    setAccordionOpen((prevOpen) => {
+      const updatedOpen = [...prevOpen];
+      updatedOpen[index] = !updatedOpen[index];
+      const newAcc = updatedOpen.map((_, i) => (i === index ? !prevOpen[index] : false));
+      return newAcc;
+    });
+  };
+
   return (
     <Box mb={3}>
-      <Grid container style={{ position: "relative", minHeight: "100vh" }}>
+      <Grid container style={{ position: "relative" }}>
         {isLoading && (
           <Box
             style={{
@@ -175,7 +172,7 @@ const Programs = () => {
               top: 0,
               left: 0,
               width: "100%",
-              height: "100%",
+              height: "70vh",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
@@ -202,12 +199,13 @@ const Programs = () => {
                       marginTop: "20px",
                       borderRadius: "5px",
                       backgroundColor: "white",
-                      width: "160vh",
+                      width: "170vh",
                     }}
                     onChange={() => {
                       setExpandedCourseId(item[1]?.course_id);
+                      handleAccordionChange(index);
                     }}
-                    // expanded={expandedCourseId === item[1]?.course_id}
+                    expanded={accordionOpen[index] || false}
                   >
                     <AccordionSummary
                       expandIcon={<ExpandMoreIcon />}

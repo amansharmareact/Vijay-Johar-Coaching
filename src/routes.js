@@ -53,15 +53,6 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Program Videos",
-    key: "program-videos",
-    icon: <PlayCircleIcon />,
-    route: "/program-videos",
-    component: <ProgramVideos />,
-    isPrivate: true,
-  },
-  {
-    type: "collapse",
     name: "All Programs",
     key: "all-programs",
     icon: <FaBookmark />,
@@ -69,6 +60,16 @@ const routes = [
     component: <AllPrograms />,
     isPrivate: true,
   },
+  {
+    type: "collapse",
+    name: "Program Videos",
+    key: "program-videos",
+    icon: <PlayCircleIcon />,
+    route: "/program-videos",
+    component: <ProgramVideos />,
+    isPrivate: true,
+  },
+
   {
     type: "collapse",
     name: "Logout",

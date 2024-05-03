@@ -156,7 +156,7 @@ const Programs = () => {
   });
   return (
     <Box mb={3}>
-      <Grid container style={{ position: "relative", minHeight: "100vh" }}>
+      <Grid container style={{ position: "relative" }}>
         {isLoading && (
           <Box
             style={{
@@ -164,7 +164,7 @@ const Programs = () => {
               top: 0,
               left: 0,
               width: "100%",
-              height: "100%",
+              height: "50vh",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
@@ -182,7 +182,7 @@ const Programs = () => {
                 ARCHIEVE PROGRAMS
               </MDTypography>
             </TitleBox>
-            <MDBox>
+            <MDBox style={{ width: "170vh" }}>
               {(courseList !== null || courseList.length <= 0) &&
                 Object.entries(courseList).map((item, index) => (
                   <Accordion

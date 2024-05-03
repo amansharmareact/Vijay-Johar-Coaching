@@ -89,7 +89,7 @@ function ProgramVideos() {
                     PROGRAM VIDEOS
                   </MDTypography>
                 </TitleBox>
-                <Card>
+                <Card style={{ width: "170vh" }}>
                   <div style={{ margin: "20px 10px" }}>
                     <List>
                       {data.map((video) => (
@@ -118,11 +118,12 @@ function ProgramVideos() {
                       }}
                       style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
                     >
-                      {/* {console.log(selectedVideo)} */}
-                      <video controls style={{ width: "800px" }}>
-                        <source src={selectedVideo} type="video/mp4" />
-                        Your browser does not support the video tag.
-                      </video>
+                      <a href={selectedVideo} download>
+                        <video controls style={{ width: "800px" }}>
+                          <source src={selectedVideo} type="video/mp4" />
+                          Your browser does not support the video tag.
+                        </video>
+                      </a>
                     </Modal>
                   </div>
                 </Card>
