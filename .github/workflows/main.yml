@@ -9,7 +9,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-    - name: Configure SSH Key and pull code
+    - name: Configure SSH Key and pull latest code
       env:
         PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       run: |
