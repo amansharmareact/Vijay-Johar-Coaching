@@ -5,24 +5,20 @@ on:
     branches: [ staging ]
 
 jobs:
-  Deploy:
-    name: Deploy to EC2
-    runs-on: ubuntu-20.04
-    
+ build:
+    name: Build
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2 
-      - name: Build & Deploy
-        env:
-            PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-            HOSTNAME: ${{secrets.SSH_HOST}}
-            USER_NAME: ${{secrets.USER_NAME}}
-      
-        run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} 
-
-              # Now we have got the access of EC2 and we will start the deploy .
-               ls
-               git clone https://github.com/amansharmareact/Vijay-Johar-Coaching.git &&
-              cd /home/ec2-user/Vijay-Johar-Coaching
-              #git checkout dev
+    - name: Configure SSH Key and pull code
+      env:
+        PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      run: |
+        echo "$PRIVATE_KEY" > private_key
+        chmod 600 private_key
+        ssh -o StrictHostKeyChecking=no -i private_key ${{ secrets.USER_NAME }}@${{ secrets.SSH_HOST }} '
+        cd /home/ec2-user/Vijay-Johar-Coaching &&
+        git branch &&
+        git pull &&
+        npm i &&
+        npm i stylis-plugin-rtl@2.0.2
+        npm start '
