@@ -27,6 +27,7 @@ import { GrResources } from "react-icons/gr";
 import { FaBookmark } from "react-icons/fa";
 import TitleBox from "components/TitleBox";
 import { makeStyles } from "@material-ui/core/styles";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,6 +49,7 @@ function ProgramVideos() {
   const [selectedResource, setSelectedResource] = useState(null);
   const [ppt, setPpt] = useState([]);
   const [video, setVideo] = useState([]);
+  const { history } = useNavigate();
   const handleResourceClick = (resource) => {
     setSelectedVideo(resource);
     setOpenVdo(true);
@@ -62,16 +64,13 @@ function ProgramVideos() {
     setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://13.126.178.112:3000/getAllProgram`, {
+      const response = await fetch(`http://13.126.178.112:3000/getAllProgram/`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: token,
         },
       });
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
-      }
       const responseData = await response.json();
       setIsLoading(false);
       setData(responseData.data || []);
@@ -81,11 +80,10 @@ function ProgramVideos() {
     }
   };
   const handleProgramById = async (id) => {
-    console.log(id);
     setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://13.126.178.112:3000/getAllProgram/${id}`, {
+      const response = await fetch(`http://13.126.178.112:3000/getAllProgram/${id}/`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -126,7 +124,7 @@ function ProgramVideos() {
             <CircularProgress color="primary" size={50} />
           </Box>
         ) : (
-          <MDBox pt={5} pb={3}>
+          <MDBox pt={5} pb={3} style={{ minHeight: "70vh" }}>
             <Grid container spacing={6}>
               <Grid item xs={12}>
                 <TitleBox>
@@ -134,7 +132,7 @@ function ProgramVideos() {
                     ALL PROGRAMS
                   </MDTypography>
                 </TitleBox>
-                <Card style={{ width: "170vh" }}>
+                <Card style={{ width: "100%" }}>
                   <div>
                     <List>
                       {data.map((resource) => (

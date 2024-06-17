@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation, useNavigate, BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Icon from "@mui/material/Icon";
@@ -21,6 +21,10 @@ import "react-toastify/dist/ReactToastify.css";
 import PropTypes from "prop-types";
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
 import SignIn from "layouts/authentication/sign-in";
+import PreProgramForm from "layouts/surveylist/components/PreProgramForm";
+import { Switch } from "@mui/material";
+import MidProgram from "layouts/surveylist/components/MidProgram";
+import PostProgram from "layouts/surveylist/components/PostProgram";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -38,6 +42,11 @@ export default function App() {
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
   const history = useNavigate();
+  const [pre, setPre] = useState(false);
+  const [post, setPost] = useState(false);
+  const [mid, setMid] = useState(false);
+  const [logout, setLogout] = useState(false);
+
   const token = localStorage.getItem("token");
   useEffect(() => {
     if (pathname === "/") {
@@ -46,9 +55,22 @@ export default function App() {
       history("/");
     }
     if (!token) {
-      history("/");
+      if (pathname === "/pre-program-form") {
+        setPre(true);
+        history("/pre-program-form");
+      } else if (pathname === "/mid-program-form") {
+        setMid(true);
+        history("/mid-program-form");
+      } else if (pathname === "/post-program-form") {
+        setPost(true);
+        history("/post-program-form");
+      } else if (pathname === "/") {
+        history("/");
+        setLogout(true);
+      }
     }
-  }, [token, history]);
+  }, [token, history, pathname]);
+
   useMemo(() => {
     const cacheRtl = createCache({
       key: "rtl",
@@ -124,6 +146,46 @@ export default function App() {
         {console.log(direction)}
         {layout === "dashboard" && (
           <>
+            {pre || mid || post ? (
+              <> </>
+            ) : (
+              <Sidenav
+                color={sidenavColor}
+                brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
+                brandName="Pro Growth Leadership & Business Coaching"
+                routes={routes}
+                onMouseEnter={handleOnMouseEnter}
+                onMouseLeave={handleOnMouseLeave}
+              />
+            )}
+            {/* <Configurator /> */}
+            {console.log(layout, "this is layourtt")}
+            {configsButton}
+          </>
+        )}
+        <Routes>
+          {!token ? (
+            <>
+              {console.log("pre", pathname)}
+              {pre && <Route path="/pre-program-form" element={<PreProgramForm />} />}
+              {mid && <Route path="/mid-program-form" element={<MidProgram />} />}
+              {post && <Route path="/post-program-form" element={<PostProgram />} />}
+              {logout && <Route path="/" element={<SignIn />} />}
+            </>
+          ) : (
+            getRoutes(routes)
+          )}
+        </Routes>
+      </ThemeProvider>
+    </CacheProvider>
+  ) : (
+    <ThemeProvider theme={darkMode ? themeDark : theme}>
+      <CssBaseline />
+      {layout === "dashboard" && (
+        <>
+          {pre || mid || post ? (
+            <> </>
+          ) : (
             <Sidenav
               color={sidenavColor}
               brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
@@ -132,40 +194,26 @@ export default function App() {
               onMouseEnter={handleOnMouseEnter}
               onMouseLeave={handleOnMouseLeave}
             />
-            {/* <Configurator /> */}
-            {console.log(layout, "this is layourtt")}
-            {configsButton}
-          </>
-        )}
-        {/* {layout === "vr" && <Configurator />} */}
-
-        <Routes>{token ? getRoutes(routes) : <Route path="/" element={<SignIn />} />}</Routes>
-        {/* <Routes>{token && <Route path="/" element={<SignIn />} />}</Routes> */}
-      </ThemeProvider>
-    </CacheProvider>
-  ) : (
-    <ThemeProvider theme={darkMode ? themeDark : theme}>
-      <CssBaseline />
-      {layout === "dashboard" && (
-        <>
-          <Sidenav
-            color={sidenavColor}
-            brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-            brandName="Pro Growth Leadership & Business Coaching"
-            routes={routes}
-            onMouseEnter={handleOnMouseEnter}
-            onMouseLeave={handleOnMouseLeave}
-          />
+          )}
+          {console.log(pre, mid, post)}
           {/* <Configurator /> */}
           {/* {configsButton} */}
         </>
       )}
-      {/* {layout === "vr" && <Configurator />} */}
-      <Routes>{token ? getRoutes(routes) : <Route path="/" element={<SignIn />} />}</Routes>{" "}
-      {/* <Routes>
-        <Route path="/sign-in" element={<SignIn />} />
-      </Routes> */}
-      {console.log(pathname, "this is layout dashboard")}
+
+      <Routes>
+        {!token ? (
+          <>
+            {console.log("pre", pathname)}
+            {pre && <Route path="/pre-program-form" element={<PreProgramForm />} />}
+            {mid && <Route path="/mid-program-form" element={<MidProgram />} />}
+            {post && <Route path="/post-program-form" element={<PostProgram />} />}
+            {logout && <Route path="/" element={<SignIn />} />}
+          </>
+        ) : (
+          getRoutes(routes)
+        )}
+      </Routes>
     </ThemeProvider>
   );
 }

@@ -99,8 +99,7 @@ body {
 ::placeholder {
   color: #000;
 }
-
-button {
+.glow-on-hover {
   margin-top: 50px;
   width: 100%;
   background-color: #ffffff;

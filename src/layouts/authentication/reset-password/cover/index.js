@@ -1,70 +1,149 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// @mui material components
+import React, { useState } from "react";
+import { useHistory, useNavigate } from "react-router-dom";
 import Card from "@mui/material/Card";
-
-// Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
+import { Box, Button, CircularProgress, Snackbar } from "@mui/material";
+import { toast, ToastContainer } from "react-toastify"; // Import toast and ToastContainer from react-toastify
+import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux";
+import { saveLoginData } from "../../../../Redux/loginSlice";
+import "../../sign-in/SignInForm.css";
+import bgImage from "assets/images/signin-bg.png";
+import { makeStyles } from "@material-ui/core/styles";
+import BasicLayout from "layouts/authentication/components/BasicLayout";
 
-// Authentication layout components
-import CoverLayout from "layouts/authentication/components/CoverLayout";
+const useStyles = makeStyles((theme) => ({
+  colorPrimary: {
+    color: "red",
+  },
+}));
+const Cover = () => {
+  const classes = useStyles();
+  const [email, setEmail] = useState("");
+  const [cpassword, setCpassword] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const history = useNavigate();
+  const dispatch = useDispatch();
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
 
-// Images
-import bgImage from "assets/images/bg-reset-cover.jpeg";
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
 
-function Cover() {
+  const handleResetPassword = async () => {
+    setIsLoading(true);
+    const url = "http://13.126.178.112:3000/setNewPassword";
+    if (password !== cpassword) {
+      toast.error("Passwords do not match");
+    } else {
+      const formValues = {
+        email: email,
+        new_password: password,
+      };
+
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+          body: JSON.stringify(formValues),
+        });
+        const data = await response.json();
+        if (response.status === 401) {
+          localStorage.removeItem("token");
+          history("/");
+        } else {
+          if (data) {
+            toast.success("Password Changed Successfully");
+            setTimeout(() => {
+              history("/");
+            }, 800);
+          } else {
+            toast.error(data.error);
+          }
+        }
+      } catch (err) {
+        toast.error(err);
+        console.error(err);
+      }
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <CoverLayout coverHeight="50vh" image={bgImage}>
-      <Card>
-        <MDBox
-          variant="gradient"
-          bgColor="info"
-          borderRadius="lg"
-          coloredShadow="success"
-          mx={2}
-          mt={-3}
-          py={2}
-          mb={1}
-          textAlign="center"
+    <BasicLayout>
+      <div>
+        <ToastContainer />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            height: "100vh",
+            width: "100%",
+          }}
         >
-          <MDTypography variant="h3" fontWeight="medium" color="white" mt={1}>
-            Reset Password
-          </MDTypography>
-          <MDTypography display="block" variant="button" color="white" my={1}>
-            You will receive an e-mail in maximum 60 seconds
-          </MDTypography>
-        </MDBox>
-        <MDBox pt={4} pb={3} px={3}>
-          <MDBox component="form" role="form">
-            <MDBox mb={4}>
-              <MDInput type="email" label="Email" variant="standard" fullWidth />
-            </MDBox>
-            <MDBox mt={6} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
-                reset
-              </MDButton>
-            </MDBox>
-          </MDBox>
-        </MDBox>
-      </Card>
-    </CoverLayout>
+          <div style={{ zIndex: "9999", marginLeft: "150px" }}>
+            <img src={bgImage} alt="" width="600px" />
+          </div>
+          <div>
+            <div className="background">
+              <div className="shape"></div>
+              <div className="shape"></div>
+            </div>
+            <form action="" className="form" style={{ height: "450px" }}>
+              <div className="form-inner">
+                <h2 style={{ textAlign: "center", color: "#1692b4", marginBottom: "15px" }}>
+                  RESET PASSWORD
+                </h2>
+                <div className="content">
+                  <input
+                    className="input"
+                    type="text"
+                    placeholder="Email"
+                    value={email}
+                    onChange={handleEmailChange}
+                  />
+                  <input
+                    className="input"
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={handlePasswordChange}
+                  />
+                  <input
+                    className="input"
+                    type="password"
+                    placeholder="Confirm Password"
+                    value={cpassword}
+                    onChange={(event) => {
+                      setCpassword(event.target.value);
+                    }}
+                  />
+                  <button className="glow-on-hover" type="button" onClick={handleResetPassword}>
+                    {isLoading ? (
+                      <CircularProgress size={24} className={classes.colorPrimary} />
+                    ) : (
+                      "Reset Password"
+                    )}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </BasicLayout>
   );
-}
+};
 
 export default Cover;

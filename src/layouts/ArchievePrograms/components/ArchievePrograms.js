@@ -1,62 +1,46 @@
-import React, { useEffect, useState } from "react";
-import { Box, Card, CircularProgress, Grid, Typography, Link, Modal } from "@mui/material";
-import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
+import { makeStyles } from "@material-ui/core/styles";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import YouTubeIcon from "@mui/icons-material/YouTube";
+import { Box, CircularProgress, Grid, IconButton, Modal, Tooltip, Typography } from "@mui/material";
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
-import IconButton from "@mui/material/IconButton";
-import GetAppIcon from "@mui/icons-material/GetApp";
-import { FormControlLabel, Checkbox } from "@mui/material";
-import ReactPlayer from "react-player";
+import MDBox from "components/MDBox";
+import MDTypography from "components/MDTypography";
 import TitleBox from "components/TitleBox";
-import YouTubeIcon from "@mui/icons-material/YouTube";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import { makeStyles } from "@material-ui/core/styles";
-import { LinearProgress } from "@mui/material";
-import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import { useEffect, useRef, useState } from "react";
+import "react-calendar/dist/Calendar.css";
+import ReactPlayer from "react-player";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify"; // Import toast and ToastContainer from react-toastify
+import "./Programs.css";
+
 const useStyles = makeStyles({
   customTreeItem: {
-    // Add your custom styles here
-    // For example:
     color: "#000000",
   },
   MuiSelectedContent: {
-    // Add styles for selected state
     backgroundColor: "transparent",
   },
 });
+
 const Programs = () => {
   const classes = useStyles();
-  const [isSelected, setIsSelected] = useState(false);
-  const [courseList, setCourseList] = useState({});
+  const [courseList, setCourseList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCLoading, setCIsLoading] = useState(true);
   const [expandedCourseId, setExpandedCourseId] = useState(null);
   const [courseData, setCourseData] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [progress, setProgress] = React.useState(0);
-
-  // useEffect(() => {
-  //   const timer = setInterval(() => {
-  //     setProgress((oldProgress) => {
-  //       if (oldProgress === 100) {
-  //         return 0;
-  //       }
-  //       const diff = Math.random() * 10;
-  //       return Math.min(oldProgress + diff, 100);
-  //     });
-  //   }, 500);
-
-  //   return () => {
-  //     clearInterval(timer);
-  //   };
-  // }, []);
-  const [truee, setTruee] = useState(false);
+  const [accordionOpen, setAccordionOpen] = useState([]);
+  const [checkboxStates, setCheckboxStates] = useState({});
+  const calenderRef = useRef(null);
+  const history = useNavigate();
 
   useEffect(() => {
     const getCourseList = async () => {
@@ -73,29 +57,32 @@ const Programs = () => {
           },
         });
         const data = await response.json();
-        const activePrograms = data.data.filter((item) => item.archives);
-        console.log(activePrograms);
-        setCourseList(activePrograms);
-        const timer = setTimeout(() => {
-          setIsLoading(false);
-        }, 600);
-
-        return () => clearTimeout(timer);
+        if (response.status === 401) {
+          localStorage.removeItem("token");
+          history("/");
+        } else {
+          const activePrograms = data.data.filter((item) => item.archives);
+          setCourseList(activePrograms);
+          setAccordionOpen(Array.from({ length: activePrograms.length }, () => false));
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 600);
+        }
       } catch (err) {
         setIsLoading(false);
       }
     };
     getCourseList();
   }, []);
-  const trackCourse = async (week, checked) => {
-    setTruee(!truee);
+
+  const trackCourse = async (courseId, checked, week_name, detailsId) => {
     try {
       const reduxState = localStorage.getItem("reduxState");
       const email = JSON.parse(reduxState).loginData.email;
       if (expandedCourseId !== null) {
-        const url = `http://13.126.178.112:3000/activeCourse/${email}/${expandedCourseId}/${week}`;
+        const url = `http://13.126.178.112:3000/activeCourse/${email}/${courseId}/${week_name}/${detailsId}`;
         const token = localStorage.getItem("token");
-        const response = await fetch(url, {
+        await fetch(url, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -103,6 +90,10 @@ const Programs = () => {
           },
           body: JSON.stringify({ actives: checked }),
         });
+        setCheckboxStates((prevState) => ({
+          ...prevState,
+          [detailsId]: checked,
+        }));
       }
     } catch (err) {
       console.log(err);
@@ -111,10 +102,9 @@ const Programs = () => {
 
   useEffect(() => {
     const getCourseData = async () => {
-      setCIsLoading(true);
-
-      try {
-        if (expandedCourseId !== null) {
+      if (expandedCourseId !== null) {
+        setCIsLoading(true);
+        try {
           const url = `http://13.126.178.112:3000/getCoursebyId/${expandedCourseId}`;
           const token = localStorage.getItem("token");
           const response = await fetch(url, {
@@ -125,20 +115,18 @@ const Programs = () => {
             },
           });
           const data = await response.json();
-          setCourseData(data.data?.details);
-          const timer = setTimeout(() => {
+          console.log(data.details);
+          setCourseData(data?.details || []);
+          setTimeout(() => {
             setCIsLoading(false);
           }, 300);
-
-          return () => clearTimeout(timer);
+        } catch (err) {
+          setCIsLoading(false);
         }
-      } catch (err) {
-        setCIsLoading(false);
       }
     };
-
     getCourseData();
-  }, [expandedCourseId]);
+  }, [expandedCourseId, checkboxStates]);
 
   const handleOpenModal = (videoUrl) => {
     setSelectedVideo(videoUrl);
@@ -149,13 +137,33 @@ const Programs = () => {
     setSelectedVideo(null);
     setIsModalOpen(false);
   };
-  const sortedCourseData = courseData.sort((a, b) => {
-    const weekA = parseInt(a.weeks.split(" ")[1]);
-    const weekB = parseInt(b.weeks.split(" ")[1]);
-    return weekA - weekB;
-  });
+
+  const handleAccordionChange = (index) => {
+    setAccordionOpen((prevOpen) => {
+      const newAccordionOpen = prevOpen.map((isOpen, i) => (i === index ? !isOpen : false));
+      return newAccordionOpen;
+    });
+    setExpandedCourseId(courseList[index].course_id);
+  };
+
+  const sortWeeks = (weeks) => {
+    return weeks.sort((a, b) => {
+      const weekA = parseInt(a.week_name.replace(/\D/g, ""), 10);
+      const weekB = parseInt(b.week_name.replace(/\D/g, ""), 10);
+      return weekA - weekB;
+    });
+  };
+  const [calendarShow, setCalendarShow] = useState(false);
+  const onOpenModal = () => {
+    setCalendarShow(true);
+  };
+
+  const onCloseCalendarModal = () => {
+    setCalendarShow(false);
+  };
+
   return (
-    <Box mb={3}>
+    <Box mb={3} style={{ minHeight: "60vh" }}>
       <Grid container style={{ position: "relative" }}>
         {isLoading && (
           <Box
@@ -164,7 +172,7 @@ const Programs = () => {
               top: 0,
               left: 0,
               width: "100%",
-              height: "50vh",
+              height: "70vh",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
@@ -179,23 +187,23 @@ const Programs = () => {
           <Grid item xs={12} lg={12}>
             <TitleBox>
               <MDTypography variant="h6" color="black" backgroundColor="red">
-                ARCHIEVE PROGRAMS
+                ARCHIVE PROGRAMS
               </MDTypography>
+              <ToastContainer style={{ fontSize: "18px" }} />
             </TitleBox>
-            <MDBox style={{ width: "170vh" }}>
-              {(courseList !== null || courseList.length <= 0) &&
-                Object.entries(courseList).map((item, index) => (
+            <MDBox>
+              {courseList.length > 0 ? (
+                courseList.map((course, index) => (
                   <Accordion
                     key={index}
                     style={{
                       marginTop: "20px",
                       borderRadius: "5px",
                       backgroundColor: "white",
-                      width: "160vh",
+                      width: "100%",
                     }}
-                    onChange={() => {
-                      setExpandedCourseId(item[1]?.course_id);
-                    }}
+                    onChange={() => handleAccordionChange(index)}
+                    expanded={accordionOpen[index] || false}
                   >
                     <AccordionSummary
                       expandIcon={<ExpandMoreIcon />}
@@ -206,185 +214,203 @@ const Programs = () => {
                       <div
                         style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
                       >
-                        <CalendarMonthIcon
-                          style={{ marginRight: "10px", color: "#1692b4", fontWeight: "800" }}
-                        />
+                        <Tooltip title={`Date: ${course.date}`} arrow>
+                          <CalendarMonthIcon
+                            style={{ marginRight: "10px", color: "#A16205", fontWeight: "800" }}
+                          />
+                        </Tooltip>
                         <div style={{ fontWeight: "500", color: "#00000", fontSize: "16px" }}>
-                          {item[1].course_name !== undefined && item[1].course_name.toUpperCase()}
+                          {course.course_name?.toUpperCase()}
                         </div>
                       </div>
                     </AccordionSummary>
                     <AccordionDetails>
-                      {isCLoading ? (
-                        <Box
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            height: "100%",
-                            width: "100%",
-                          }}
-                        >
-                          <CircularProgress color="primary" size={50} />
-                        </Box>
-                      ) : (
-                        <SimpleTreeView>
-                          {sortedCourseData !== null || sortedCourseData.length <= 0 ? (
-                            sortedCourseData.map((weekData, id) => (
-                              <>
-                                <SimpleTreeView key={id}>
-                                  <TreeItem
-                                    itemId="grid"
-                                    label={weekData.weeks}
-                                    classes={{
-                                      root: classes.customTreeItem,
-                                      content: `${classes.MuiSelectedContent} .css-1xqquov-MuiTreeItem-content`,
-                                    }}
-                                  >
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                        justifyContent: "space-between",
-                                        width: "100%",
-                                        padding: "15px 20px",
-                                      }}
-                                    >
-                                      <div>
-                                        {weekData.headings && (
-                                          <>
-                                            {weekData.headings && (
-                                              <>
-                                                {JSON.parse(weekData.headings).heading.map(
-                                                  (heading, index) => (
-                                                    <div
-                                                      key={index}
-                                                      style={{
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "flex-start",
-                                                      }}
-                                                    >
-                                                      <Checkbox
-                                                        checked={weekData.active}
-                                                        onChange={(e) => {
-                                                          const newActiveState = e.target.checked;
-                                                          setCourseData((prevCourseData) => {
-                                                            const updatedCourseData =
-                                                              prevCourseData.map((week) =>
-                                                                week.weeks === weekData.weeks
-                                                                  ? {
-                                                                      ...week,
-                                                                      active: newActiveState,
-                                                                    }
-                                                                  : week
-                                                              );
-                                                            return updatedCourseData;
-                                                          });
-                                                          trackCourse(
-                                                            weekData.weeks,
-                                                            newActiveState
-                                                          );
-                                                        }}
-                                                        style={{
-                                                          color: "#000",
-                                                          cursor: "pointer",
-                                                          marginRight: "10px",
-                                                        }}
-                                                      />
-                                                      <div
-                                                        style={{
-                                                          fontSize: "18px",
-                                                          color: "#000",
-                                                          display: "inline-block",
-                                                          verticalAlign: "middle",
-                                                        }}
-                                                      >
-                                                        {heading}
-                                                      </div>
-                                                    </div>
-                                                  )
-                                                )}
-                                              </>
-                                            )}
-                                            <div style={{ padding: "10px 30px" }}>
-                                              {weekData.headings && (
-                                                <>
-                                                  {JSON.parse(
-                                                    JSON.parse(weekData.headings).subheading
-                                                  ).map((subheading, index) => (
-                                                    <div key={index}>{subheading}</div>
-                                                  ))}
-                                                </>
-                                              )}
-                                            </div>
-                                          </>
-                                        )}
-                                      </div>
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          alignItems: "center",
-                                          justifyContent: "center",
-                                        }}
-                                      >
-                                        <div style={{ textAlign: "center", fontSize: "30px" }}>
-                                          {/* {console.log(weekData)} */}
-                                          {weekData.PPT !== undefined &&
-                                            weekData.PPT !== "undefined" && (
-                                              <Link
-                                                href={weekData.PPT}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                download
-                                              >
-                                                <IconButton
-                                                  aria-label="download"
-                                                  style={{ fontSize: "30px" }}
-                                                >
-                                                  <PictureAsPdfIcon style={{ color: "#1692b4" }} />
-                                                </IconButton>
-                                              </Link>
-                                            )}
-                                        </div>
-                                        <div style={{ fontSize: "30px", display: "flex" }}>
-                                          {weekData.video && (
-                                            <YouTubeIcon
-                                              onClick={() => handleOpenModal(weekData.video)}
-                                              style={{ color: "#1692b4", cursor: "pointer" }}
-                                            />
-                                          )}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </TreeItem>
-                                </SimpleTreeView>
-                              </>
-                            ))
-                          ) : (
-                            <>
-                              {Object.keys(courseList).length === 0 && !isLoading && (
+                      <SimpleTreeView>
+                        {courseData.length > 0 ? (
+                          sortWeeks(courseData).map((weekData, id) => (
+                            <TreeItem
+                              key={id}
+                              itemId={`week-${id}`}
+                              label={
                                 <div
                                   style={{
                                     display: "flex",
-                                    justifyContent: "center",
                                     alignItems: "center",
-                                    width: "100%",
-                                    height: "50vh",
+                                    justifyContent: "space-between",
                                   }}
                                 >
-                                  <h2>No Course Found</h2>
+                                  <Typography>{weekData.week_name}</Typography>
                                 </div>
-                              )}
-                            </>
-                          )}
-                        </SimpleTreeView>
-                      )}
+                              }
+                              classes={{
+                                root: classes.customTreeItem,
+                                content: `${classes.MuiSelectedContent} .css-1xqquov-MuiTreeItem-content`,
+                              }}
+                            >
+                              {Object.keys(weekData)
+                                .filter((key) => key.startsWith("details"))
+                                .map((key, i) => {
+                                  const details = weekData[key];
+                                  return (
+                                    <div key={i}>
+                                      <div
+                                        style={{
+                                          padding: "10px 0px",
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "space-between",
+                                        }}
+                                      >
+                                        <div
+                                          style={{
+                                            padding: "10px 20px",
+                                            display: "flex",
+                                          }}
+                                        >
+                                          <div>
+                                            <div>
+                                              <div className="checkbox-wrapper-19">
+                                                <input
+                                                  type="checkbox"
+                                                  id={`cbtest-19-${id}-${i}`}
+                                                  checked={
+                                                    checkboxStates[details.id] ?? details.active
+                                                  }
+                                                  onChange={(e) =>
+                                                    trackCourse(
+                                                      course.course_id,
+                                                      e.target.checked,
+                                                      weekData.week_name,
+                                                      details.id
+                                                    )
+                                                  }
+                                                />
+                                                <label
+                                                  htmlFor={`cbtest-19-${id}-${i}`}
+                                                  className="check-box"
+                                                ></label>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          {details.headings && (
+                                            <div>
+                                              {JSON.parse(details.headings).heading.map(
+                                                (heading, index) => (
+                                                  <Typography
+                                                    key={index}
+                                                    style={{
+                                                      fontSize: "18px",
+                                                      color: "black",
+                                                      fontWeight: "600",
+                                                    }}
+                                                  >
+                                                    {heading}
+                                                  </Typography>
+                                                )
+                                              )}
+                                              <div>
+                                                {Array.isArray(
+                                                  JSON.parse(details.headings).subheading
+                                                ) ? (
+                                                  JSON.parse(details.headings).subheading.map(
+                                                    (subheading, index) => (
+                                                      <Typography
+                                                        key={index}
+                                                        variant="body2"
+                                                        color="black"
+                                                      >
+                                                        {subheading}
+                                                      </Typography>
+                                                    )
+                                                  )
+                                                ) : (
+                                                  <Typography variant="body2" color="black">
+                                                    {JSON.parse(details.headings).subheading}
+                                                  </Typography>
+                                                )}
+                                              </div>
+                                            </div>
+                                          )}
+                                        </div>
+                                        <div style={{ display: "flex", alignItems: "center" }}>
+                                          <div>
+                                            {
+                                              <div
+                                                style={{
+                                                  display: "flex",
+                                                  alignItems: "center",
+                                                }}
+                                              >
+                                                <IconButton
+                                                  href={details.PPT}
+                                                  download
+                                                  target="_blank"
+                                                >
+                                                  <PictureAsPdfIcon style={{ color: "#1692b4" }} />
+                                                </IconButton>
+                                                <Typography variant="body2" color="black">
+                                                  {`PPT ${i + 1}`}
+                                                </Typography>
+                                              </div>
+                                            }
+                                            {details.video && (
+                                              <div
+                                                style={{
+                                                  display: "flex",
+                                                  alignItems: "center",
+                                                }}
+                                              >
+                                                <IconButton
+                                                  onClick={() => handleOpenModal(details.video)}
+                                                >
+                                                  <YouTubeIcon style={{ color: "#1692b4" }} />
+                                                </IconButton>
+                                                <Typography variant="body2" color="black">
+                                                  {`Video ${i + 1}`}
+                                                </Typography>
+                                              </div>
+                                            )}
+                                          </div>
+                                          <div
+                                            style={{
+                                              width: "0",
+                                              height: "90px",
+                                              marginLeft: "30px",
+                                              borderLeft: "5px solid black",
+                                              transition: "borderColor 0.3s ease",
+                                              borderColor: details.active ? "green" : "#A16205",
+                                              borderTopLeftRadius: "15px",
+                                              borderBottomLeftRadius: "15px",
+                                            }}
+                                          ></div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                            </TreeItem>
+                          ))
+                        ) : (
+                          <div>No Course Data Found</div>
+                        )}
+                      </SimpleTreeView>
                     </AccordionDetails>
-                    {/* <LinearProgress style={{ width: "160vh", overflow: "hidden" }} /> */}
                   </Accordion>
-                ))}
+                ))
+              ) : (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                    height: "50vh",
+                  }}
+                >
+                  <h2>No Course Found</h2>
+                </div>
+              )}
             </MDBox>
-
             <Modal open={isModalOpen} onClose={handleCloseModal}>
               <Box
                 sx={{
@@ -396,23 +422,10 @@ const Programs = () => {
                   boxShadow: 24,
                 }}
               >
-                <ReactPlayer url={selectedVideo} controls={true} width="100%" height="100%" />
+                <ReactPlayer url={selectedVideo} controls width="100%" height="100%" />
               </Box>
             </Modal>
           </Grid>
-        )}
-        {Object.keys(courseList).length === 0 && !isLoading && (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
-              height: "50vh",
-            }}
-          >
-            <h2>No Course Found</h2>
-          </div>
         )}
       </Grid>
     </Box>

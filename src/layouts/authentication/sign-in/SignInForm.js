@@ -51,15 +51,20 @@ const SignInForm = () => {
         body: JSON.stringify(formValues),
       });
       const data = await response.json();
-      if (data && data.token) {
-        localStorage.setItem("token", data.token);
-        dispatch(saveLoginData(data));
-        toast.success("Login Successful");
-        setTimeout(() => {
-          history("/dashboard");
-        }, 800);
+      if (response.status === 401) {
+        localStorage.removeItem("token");
+        history("/");
+      } else {
+        if (data && data.token) {
+          localStorage.setItem("token", data.token);
+          dispatch(saveLoginData(data));
+          toast.success("Login Successful");
+          setTimeout(() => {
+            history("/dashboard");
+          }, 800);
+        }
+        toast.error(data.error);
       }
-      toast.error(data.error);
     } catch (err) {
       toast.error(err);
       console.error(err);
@@ -69,16 +74,16 @@ const SignInForm = () => {
 
   return (
     <div>
-      <ToastContainer />
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
           alignItems: "center",
           height: "100vh",
           width: "100%",
         }}
       >
+        <ToastContainer />
+
         <div style={{ zIndex: "9999", marginLeft: "150px" }}>
           <img src={bgImage} alt="" width="600px" />
         </div>

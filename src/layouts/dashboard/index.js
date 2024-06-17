@@ -10,6 +10,7 @@ import Footer from "examples/Footer";
 import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
+import { useState, useEffect } from "react";
 
 // Data
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
@@ -18,126 +19,106 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 // Dashboard components
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
+import Card from "./Card";
+import TitleBox from "components/TitleBox";
+import MDTypography from "components/MDTypography";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState([]);
+  const navigate = useNavigate();
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const reduxState = localStorage.getItem("reduxState");
+      const email = JSON.parse(reduxState).loginData.email;
+      const response = await fetch(`http://13.126.178.112:3000/CoachDashboard/${email}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      });
+      const responseData = await response.json();
+      console.log(responseData);
+      setData(responseData.data);
+      setIsLoading(false);
+    } catch (error) {
+      setError(error.message);
+      setIsLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
   return (
     <DashboardLayout>
-      <DashboardNavbar />
-      <MDBox py={3}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                color="dark"
-                icon="weekend"
-                title="Bookings"
-                count={281}
-                percentage={{
-                  color: "success",
-                  amount: "+55%",
-                  label: "than lask week",
-                }}
-              />
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                icon="leaderboard"
-                title="Today's Users"
-                count="2,300"
-                percentage={{
-                  color: "success",
-                  amount: "+3%",
-                  label: "than last month",
-                }}
-              />
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                color="success"
-                icon="store"
-                title="Revenue"
-                count="34k"
-                percentage={{
-                  color: "success",
-                  amount: "+1%",
-                  label: "than yesterday",
-                }}
-              />
-            </MDBox>
-          </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                color="primary"
-                icon="person_add"
-                title="Followers"
-                count="+91"
-                percentage={{
-                  color: "success",
-                  amount: "",
-                  label: "Just updated",
-                }}
-              />
-            </MDBox>
+      <DashboardNavbar style={{ position: "sticky" }} />
+      <MDBox py={3} style={{ height: "70vh" }}>
+        <Grid container>
+          <TitleBox>
+            <MDTypography variant="h6" color="black" backgroundColor="red">
+              DASHBOARD
+            </MDTypography>
+          </TitleBox>
+          <Grid
+            item
+            xs={12}
+            pt={5}
+            style={{ display: "flex", alignItems: "center", justifyContent: "space-around" }}
+          >
+            <Grid item xs={12} md={6} lg={3} style={{ cursor: "pointer" }}>
+              <MDBox mb={1.5}>
+                <ComplexStatisticsCard
+                  color="dark"
+                  icon="weekend"
+                  title="Total Number of Courses"
+                  count={data?.TotalProgram}
+                />
+              </MDBox>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              md={6}
+              lg={3}
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                navigate("/active-programs");
+              }}
+            >
+              <MDBox mb={1.5}>
+                <ComplexStatisticsCard
+                  icon="leaderboard"
+                  title="Active Programs"
+                  count={data?.ActiveProgram?.length}
+                />
+              </MDBox>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              md={6}
+              lg={3}
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                navigate("/archive-programs");
+                console.log("psyhesssss");
+              }}
+            >
+              <MDBox mb={1.5}>
+                <ComplexStatisticsCard
+                  icon="leaderboard"
+                  title="Archieve Programs"
+                  count={data?.CompletedProgram?.length}
+                />
+              </MDBox>
+            </Grid>
           </Grid>
         </Grid>
-        <MDBox mt={4.5}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsBarChart
-                  color="info"
-                  title="website views"
-                  description="Last Campaign Performance"
-                  date="campaign sent 2 days ago"
-                  chart={reportsBarChartData}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="success"
-                  title="daily sales"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
-                  date="updated 4 min ago"
-                  chart={sales}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="dark"
-                  title="completed tasks"
-                  description="Last Campaign Performance"
-                  date="just updated"
-                  chart={tasks}
-                />
-              </MDBox>
-            </Grid>
-          </Grid>
-        </MDBox>
-        <MDBox>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={8}>
-              <Projects />
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <OrdersOverview />
-            </Grid>
-          </Grid>
-        </MDBox>
       </MDBox>
       <Footer />
     </DashboardLayout>

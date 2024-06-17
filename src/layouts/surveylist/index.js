@@ -9,6 +9,8 @@ import {
   InputLabel,
   IconButton,
 } from "@mui/material";
+import SaveIcon from "@mui/icons-material/Save";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
 import { toast, ToastContainer } from "react-toastify";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -27,6 +29,7 @@ import { useState, useEffect } from "react";
 // Data
 import { Box, CircularProgress, Stack } from "@mui/material";
 import TitleBox from "components/TitleBox";
+import { useNavigate } from "react-router-dom";
 function Tables() {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -48,7 +51,6 @@ function Tables() {
     Max_no_of_participants: "",
     language: "",
     survey_type: "",
-    survey_questions: "",
   });
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -58,6 +60,8 @@ function Tables() {
   const [modal, setModal] = useState(false);
   const [selectedSurveyId, setSelectedSurveyId] = useState(null);
   const [surveyName, setSurveyName] = useState("");
+  const history = useNavigate();
+
   const handleSaveSurveyName = async () => {
     setIsLoading(true);
     try {
@@ -74,17 +78,19 @@ function Tables() {
           body: JSON.stringify({ survey_name: surveyName }),
         }
       );
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
-      }
-      toast.success("Survey Name Updated Successfully");
-      setIsLoading(false);
-      setModal(false);
-      const timer = setTimeout(() => {
-        fetchData();
-      }, 200); // Fetch data after one second
+      if (response.status === 401) {
+        localStorage.removeItem("token");
+        history("/");
+      } else {
+        toast.success("Survey Name Updated Successfully");
+        setIsLoading(false);
+        setModal(false);
+        const timer = setTimeout(() => {
+          fetchData();
+        }, 200); // Fetch data after one second
 
-      return () => clearTimeout(timer);
+        return () => clearTimeout(timer);
+      }
     } catch (error) {
       setError(error.message);
       setIsLoading(false);
@@ -92,10 +98,8 @@ function Tables() {
   };
   const [openSurveyLink, setOpenSurveyLink] = useState(false);
   const handleSubmit = async (e) => {
-    console.log(formData.survey_type);
     setSurveyLink(formData.survey_type);
     e.preventDefault();
-    // Handle form submission here
     setIsLoading(true);
     const formDataValues = Object.values(formData);
     if (formDataValues.some((value) => value === "")) {
@@ -104,7 +108,7 @@ function Tables() {
 
       return; // Exit the function early if any field is empty
     }
-    var url = "http://13.126.178.112:3000/createSurvey";
+    const url = "http://13.126.178.112:3000/createSurvey";
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(url, {
@@ -116,21 +120,25 @@ function Tables() {
         body: JSON.stringify(formData),
       });
       const data = await response.json();
-      if (data.status !== 200) {
-        toast.error("Create a Valid Survey");
+      if (response.status === 401) {
+        localStorage.removeItem("token");
+        history("/");
       } else {
-        toast.success("Survey Created Successfully");
+        if (data.status !== 200) {
+          toast.error("Create a Valid Survey");
+        } else {
+          toast.success("Survey Created Successfully");
+        }
+        setIsLoading(false);
+        setOpenAddSurvey(false);
+        setOpenSurveyLink(true);
       }
-      setIsLoading(false);
-      setOpenAddSurvey(false);
-      setOpenSurveyLink(true);
     } catch (err) {
       setIsLoading(false);
       console.log(err);
     }
   };
   const fetchData = async () => {
-    console.log(pre);
     setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
@@ -141,12 +149,15 @@ function Tables() {
           Authorization: token,
         },
       });
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
-      }
       const responseData = await response.json();
-      setData(responseData.data || []);
+      console.log(responseData.data, "this is data");
+      setData(responseData.data);
       setIsLoading(false);
+      if (response.status === 401) {
+        localStorage.removeItem("token");
+        history("/");
+      } else {
+      }
     } catch (error) {
       setError(error.message);
       setIsLoading(false);
@@ -163,12 +174,12 @@ function Tables() {
       Max_no_of_participants: "",
       language: "",
       survey_type: "",
-      survey_questions: "",
     });
   };
-  useEffect(() => {
-    console.log(surveyLink);
-  });
+  const handleGenerateReport = (link) => {
+    window.open(link, "_blank");
+  };
+  const url = "www.progrowth.coach";
   return (
     <>
       <DashboardLayout>
@@ -194,7 +205,7 @@ function Tables() {
                     SURVEY LIST
                   </MDTypography>
                 </TitleBox>
-                <Card style={{ width: "170vh" }}>
+                <Card style={{ width: "100%" }}>
                   <Stack spacing={2} pt={3} px={4} direction="row">
                     <Button
                       variant="contained"
@@ -224,7 +235,7 @@ function Tables() {
                       variant="contained"
                       style={{ color: "black", width: "120px", height: "30px" }}
                       onClick={() => {
-                        setPre("/Pre");
+                        setPre("/PRE");
                       }}
                     >
                       Pre Program
@@ -234,7 +245,7 @@ function Tables() {
                       variant="contained"
                       style={{ color: "black", width: "120px", height: "30px" }}
                       onClick={() => {
-                        setPre("/Mid");
+                        setPre("/MID");
                       }}
                     >
                       Mid Program
@@ -244,7 +255,7 @@ function Tables() {
                       variant="contained"
                       style={{ color: "black", width: "120px", height: "30px" }}
                       onClick={() => {
-                        setPre("/Post");
+                        setPre("/POST");
                       }}
                     >
                       Post Program
@@ -268,7 +279,7 @@ function Tables() {
                               <th className="table-data">Participants</th>
                               <th className="table-data">Created On</th>
                               <th className="table-data">Submission Count</th>
-                              <th className="table-data">Status</th>
+                              {/* <th className="table-data">Status</th> */}
                               <th className="table-data">Action</th>
                             </tr>
                           </thead>
@@ -280,8 +291,7 @@ function Tables() {
                                 <td className="table-dataa">{survey.organisation_name}</td>
                                 <td className="table-dataa">{survey.Max_no_of_participants}</td>
                                 <td className="table-dataa">{survey.start_survey_date}</td>
-                                <td className="table-dataa">{survey.survey_questions}</td>
-                                <td className="table-dataa">{survey.language}</td>
+                                <td className="table-dataa">{survey.submission_count}</td>
                                 <td
                                   style={{
                                     display: "flex",
@@ -290,10 +300,12 @@ function Tables() {
                                     justifyContent: "center",
                                   }}
                                 >
-                                  {" "}
                                   <Button
                                     variant="contained"
                                     color="primary"
+                                    onClick={() => {
+                                      handleGenerateReport(survey.pdf_link);
+                                    }}
                                     style={{
                                       marginRight: 10,
                                       width: "190px",
@@ -307,7 +319,6 @@ function Tables() {
                                   >
                                     Generate Report
                                   </Button>
-                                  {/* Feedback Details Button */}
                                   <Button
                                     variant="contained"
                                     color="secondary"
@@ -341,7 +352,6 @@ function Tables() {
                                     onClick={() => {
                                       setSelectedSurveyId(survey.id);
                                       setModal(true);
-                                      console.log(survey);
                                     }}
                                   >
                                     <EditIcon /> Edit
@@ -409,8 +419,8 @@ function Tables() {
       <ToastContainer />
 
       <Dialog open={openAddSurvey} onClose={handleCloseAddSurvey}>
-        <DialogTitle style={{}}>Create Survey</DialogTitle>
-        <DialogContent style={{ minWidth: "80vh", minHeight: "80vh" }}>
+        <DialogTitle>Create Survey</DialogTitle>
+        <DialogContent>
           <>
             {isLoading ? (
               <Box
@@ -491,29 +501,12 @@ function Tables() {
                     style={{ height: "100px" }}
                     onChange={handleChange}
                   >
-                    <MenuItem value="pre">Pre Program</MenuItem>
-                    <MenuItem value="mid">Mid Program</MenuItem>
-                    <MenuItem value="post">Post Program</MenuItem>
+                    <MenuItem value="PRE">Pre Program</MenuItem>
+                    <MenuItem value="MID">Mid Program</MenuItem>
+                    <MenuItem value="POST">Post Program</MenuItem>
                   </Select>
                 </FormControl>
 
-                <FormControl fullWidth margin="normal" style={{ height: "42px" }}>
-                  <InputLabel id="survey-type-label" style={{ fontSize: "14px", height: "42px" }}>
-                    Survey Questions
-                  </InputLabel>
-                  <Select
-                    labelId="survey-type-label"
-                    id="surveyType"
-                    name="survey_questions"
-                    style={{ height: "100px" }}
-                    value={formData.survey_questions}
-                    onChange={handleChange}
-                  >
-                    <MenuItem value="multipleChoice">Multiple Choice</MenuItem>
-                    <MenuItem value="shortAnswer">Short Answer</MenuItem>
-                    <MenuItem value="ratingScale">Rating Scale</MenuItem>
-                  </Select>
-                </FormControl>
                 <div style={{ display: "flex", justifyContent: "space-around" }}>
                   <Button
                     variant="contained"
@@ -546,6 +539,57 @@ function Tables() {
           </>
         </DialogContent>
       </Dialog>
+      <Modal open={openSurveyLink} onClose={() => setOpenSurveyLink(false)}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: "15px",
+          }}
+        >
+          <Typography variant="h6" component="h2" gutterBottom>
+            Survey Link
+          </Typography>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <Typography variant="h6" component="h2" gutterBottom>
+              {formData.survey_type === "PRE" && `${url}/pre-program-form`}
+              {formData.survey_type === "MID" && `${url}/mid-program-form`}
+              {formData.survey_type === "POST" && `${url}/post-program-form`}
+            </Typography>
+
+            <div>
+              <IconButton
+                color="primary"
+                onClick={() => {
+                  let link = "";
+                  if (formData.survey_type === "pre") {
+                    link = `${url}/pre-program-form`;
+                  } else if (formData.survey_type === "mid") {
+                    link = `${url}/mid-program-form`;
+                  } else if (formData.survey_type === "post") {
+                    link = `${url}/post-program-form`;
+                  }
+                  navigator.clipboard.writeText(link); // Copy the link to the clipboard
+                  toast.success("Link Copied Successfully"); // Show success toast
+                }}
+                style={{
+                  marginRight: 10,
+                  marginBottom: 10,
+                  marginTop: "20px",
+                }}
+              >
+                <FileCopyIcon />
+              </IconButton>
+            </div>
+          </div>
+        </Box>
+      </Modal>
     </>
   );
 }

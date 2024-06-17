@@ -25,11 +25,13 @@ import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import { Box, CircularProgress, Stack } from "@mui/material";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import TitleBox from "components/TitleBox";
+import { useNavigate } from "react-router-dom";
 function ProgramVideos() {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(false);
   const [openVdo, setOpenVdo] = useState(false);
+  const history = useNavigate();
 
   const handleVideoClick = (video) => {
     setSelectedVideo(video);
@@ -42,18 +44,21 @@ function ProgramVideos() {
     setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://13.126.178.112:3000/getAllVideo`, {
+      const response = await fetch(`http://13.126.178.112:3000/getAllVideo/`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: token,
         },
       });
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
+      if (response.status === 401) {
+        localStorage.removeItem("token");
+        history("/");
+      } else {
+        const responseData = await response.json();
+        setData(responseData.data || []);
+        console.log(responseData.data);
       }
-      const responseData = await response.json();
-      setData(responseData.data || []);
       setIsLoading(false);
     } catch (error) {
       setError(error.message);
@@ -81,7 +86,7 @@ function ProgramVideos() {
             <CircularProgress color="primary" size={50} />
           </Box>
         ) : (
-          <MDBox pt={5} pb={3}>
+          <MDBox pt={5} pb={3} style={{ minHeight: "60vh" }}>
             <Grid container spacing={6}>
               <Grid item xs={12}>
                 <TitleBox>
@@ -89,7 +94,7 @@ function ProgramVideos() {
                     PROGRAM VIDEOS
                   </MDTypography>
                 </TitleBox>
-                <Card style={{ width: "170vh" }}>
+                <Card style={{ width: "100%" }}>
                   <div style={{ margin: "20px 10px" }}>
                     <List>
                       {data.map((video) => (

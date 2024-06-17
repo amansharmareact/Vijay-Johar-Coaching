@@ -1,0 +1,121 @@
+.form-section {
+  /* background-image: url("../../../assets/images/PROGROWTH.png"); */
+  padding: 40px;
+}
+.question-section {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 15px;
+  width: "100%" !important;
+}
+.question-english {
+  font-size: "18px";
+  font-weight: 600;
+  text-align: justify;
+}
+.question-hindi {
+  font-size: "16px";
+  text-align: justify;
+}
+.checkboxes {
+  margin-left: 20px;
+}
+.checkbox-label {
+  font-size: 16px;
+  margin-left: 5px;
+}
+.suggestion {
+  padding: 8px;
+  font-size: 16px;
+  border: none;
+  border-bottom: 1px solid gray;
+  margin-top: 10px;
+  box-shadow: none;
+  width: 100%;
+}
+.customer-details {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.customer-input {
+  padding: 8px;
+  font-size: 16px;
+  border: none;
+  border-bottom: 1px solid gray;
+  margin-top: 10px;
+  box-shadow: none;
+  width: 100%;
+}
+.heading{
+  line-height: normal;
+  margin-left: 14px;
+  font-size: 20px;
+  font-weight: 600;
+}
+.suggestion:focus {
+  outline: none; /* Remove outline on focus */
+}
+.customer-input:focus {
+  outline: none; /* Remove outline on focus */
+}
+@media screen and (max-width: 768px) {
+  .question-english {
+    font-size: 14px;
+  }
+  .customer-input {
+    font-size: 14px;
+  }
+  .question-hindi {
+    font-size: 12px;
+  }
+  .question-section {
+    padding: 15px;
+    justify-content: flex-start;
+  }
+  .checkbox-label {
+    font-size: 12px;
+    margin-left: 3px;
+  }
+  .checkboxes {
+    margin-left: 5px;
+  }
+  .form-section {
+    /* background-image: url("../../../assets/images/PROGROWTH.png"); */
+    padding: 20px;
+  }
+}
+.button {
+  --c: #229091; /* the color*/
+  border-radius: 8px;
+  box-shadow: 0 0 0 0.1em inset var(--c);
+  --_g: linear-gradient(var(--c) 0 0) no-repeat;
+  background: var(--_g) calc(var(--_p, 0%) - 100%) 0%, var(--_g) calc(200% - var(--_p, 0%)) 0%,
+    var(--_g) calc(var(--_p, 0%) - 100%) 100%, var(--_g) calc(200% - var(--_p, 0%)) 100%;
+  background-size: 50.5% calc(var(--_p, 0%) / 2 + 0.5%);
+  outline-offset: 0.1em;
+  transition: background-size 0.4s, background-position 0s 0.4s;
+}
+.button:hover {
+  --_p: 100%;
+  transition: background-position 0.4s, background-size 0s;
+}
+.button:active {
+  box-shadow: 0 0 9e9Q inset #0009;
+  background-color: var(--c);
+  color: #fff;
+}
+
+.button {
+  font-family: system-ui, sans-serif;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0.1em 0.6em;
+  font-weight: bold;
+  border: none;
+  height: 40px;
+  width: 120px;
+}
