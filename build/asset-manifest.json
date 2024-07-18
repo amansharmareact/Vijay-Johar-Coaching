@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.b7e10913.css",
-    "main.js": "/static/js/main.403aa602.js",
+    "main.js": "/static/js/main.0db056d7.js",
     "reactPlayerYouTube.js": "/static/js/reactPlayerYouTube.d2d382c5.chunk.js",
     "reactPlayerSoundCloud.js": "/static/js/reactPlayerSoundCloud.70478ff4.chunk.js",
     "reactPlayerVimeo.js": "/static/js/reactPlayerVimeo.27ab3a0e.chunk.js",
@@ -32,7 +32,7 @@
     "static/media/logo-atlassian.svg": "/static/media/logo-atlassian.d92c4f81bb3efbf288b3ef71ce2fbfb0.svg",
     "index.html": "/index.html",
     "main.b7e10913.css.map": "/static/css/main.b7e10913.css.map",
-    "main.403aa602.js.map": "/static/js/main.403aa602.js.map",
+    "main.0db056d7.js.map": "/static/js/main.0db056d7.js.map",
     "reactPlayerYouTube.d2d382c5.chunk.js.map": "/static/js/reactPlayerYouTube.d2d382c5.chunk.js.map",
     "reactPlayerSoundCloud.70478ff4.chunk.js.map": "/static/js/reactPlayerSoundCloud.70478ff4.chunk.js.map",
     "reactPlayerVimeo.27ab3a0e.chunk.js.map": "/static/js/reactPlayerVimeo.27ab3a0e.chunk.js.map",
@@ -50,6 +50,6 @@
   },
   "entrypoints": [
     "static/css/main.b7e10913.css",
-    "static/js/main.403aa602.js"
+    "static/js/main.0db056d7.js"
   ]
 }

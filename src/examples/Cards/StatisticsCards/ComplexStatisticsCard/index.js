@@ -47,7 +47,12 @@ function ComplexStatisticsCard({ color, title, count, percentage, icon }) {
           </Icon>
         </MDBox>
         <MDBox textAlign="right" lineHeight={1.25}>
-          <MDTypography variant="button" fontWeight="light" color="text">
+          <MDTypography
+            variant="button"
+            fontWeight="dark"
+            color="black"
+            style={{ fontWeight: 800 }}
+          >
             {title}
           </MDTypography>
           <MDTypography variant="h4">{count}</MDTypography>

@@ -83,7 +83,7 @@ function ProgramVideos() {
     setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://13.126.178.112:3000/getAllProgram/${id}/`, {
+      const response = await fetch(`http://13.126.178.112:3000/getAllProgram/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -94,6 +94,7 @@ function ProgramVideos() {
         throw new Error("Failed to fetch data");
       }
       const responseData = await response.json();
+      console.log(responseData);
       setVideo(responseData.video);
       setPpt(responseData.ppts);
       setIsLoading(false);

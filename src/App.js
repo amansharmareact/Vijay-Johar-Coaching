@@ -166,7 +166,6 @@ export default function App() {
         <Routes>
           {!token ? (
             <>
-              {console.log("pre", pathname)}
               {pre && <Route path="/pre-program-form" element={<PreProgramForm />} />}
               {mid && <Route path="/mid-program-form" element={<MidProgram />} />}
               {post && <Route path="/post-program-form" element={<PostProgram />} />}

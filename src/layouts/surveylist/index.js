@@ -99,14 +99,19 @@ function Tables() {
   const [openSurveyLink, setOpenSurveyLink] = useState(false);
   const handleSubmit = async (e) => {
     setSurveyLink(formData.survey_type);
-    e.preventDefault();
+    formData.survey_type === "PRE"
+      ? setLink(`www.progrowth.coach/pre-program-form`)
+      : formData.survey_type === "MID"
+      ? setLink(`www.progrowth.coach/pre-program-form`)
+      : formData.survey_type === "POST"
+      ? setLink(`www.progrowth.coach/post-program-form`)
+      : " ";
     setIsLoading(true);
     const formDataValues = Object.values(formData);
     if (formDataValues.some((value) => value === "")) {
       toast.error("Please fill in all the fields");
       setIsLoading(false);
-
-      return; // Exit the function early if any field is empty
+      return;
     }
     const url = "http://13.126.178.112:3000/createSurvey";
     try {
@@ -150,7 +155,6 @@ function Tables() {
         },
       });
       const responseData = await response.json();
-      console.log(responseData.data, "this is data");
       setData(responseData.data);
       setIsLoading(false);
       if (response.status === 401) {
@@ -179,7 +183,18 @@ function Tables() {
   const handleGenerateReport = (link) => {
     window.open(link, "_blank");
   };
-  const url = "www.progrowth.coach";
+  const [link, setLink] = useState("");
+  const handleClick = () => {
+    navigator.clipboard
+      .writeText(link) // Copy the link to the clipboard
+      .then(() => {
+        toast.success("Link Copied Successfully"); // Show success toast
+      })
+      .catch((err) => {
+        toast.error("Failed to copy the link"); // Show error toast in case of failure
+      });
+  };
+
   return (
     <>
       <DashboardLayout>
@@ -221,7 +236,12 @@ function Tables() {
                     </Button>
                     <Button
                       color="warning"
-                      style={{ color: "black", width: "120px", height: "30px" }}
+                      style={{
+                        color: pre === "" ? "white" : "black", // Change text color when active
+                        backgroundColor: pre === "" ? "#1692b4" : "white", // Example change background color when active
+                        width: "120px",
+                        height: "30px",
+                      }}
                       variant="contained"
                       onClick={() => {
                         setPre("");
@@ -233,7 +253,12 @@ function Tables() {
                     <Button
                       color="warning"
                       variant="contained"
-                      style={{ color: "black", width: "120px", height: "30px" }}
+                      style={{
+                        color: pre === "/PRE" ? "white" : "black", // Change text color when active
+                        backgroundColor: pre === "/PRE" ? "#1692b4" : "white", // Example change background color when active
+                        width: "120px",
+                        height: "30px",
+                      }}
                       onClick={() => {
                         setPre("/PRE");
                       }}
@@ -243,7 +268,12 @@ function Tables() {
                     <Button
                       color="warning"
                       variant="contained"
-                      style={{ color: "black", width: "120px", height: "30px" }}
+                      style={{
+                        color: pre === "/MID" ? "white" : "black", // Change text color when active
+                        backgroundColor: pre === "/MID" ? "#1692b4" : "white", // Example change background color when active
+                        width: "120px",
+                        height: "30px",
+                      }}
                       onClick={() => {
                         setPre("/MID");
                       }}
@@ -253,7 +283,12 @@ function Tables() {
                     <Button
                       color="warning"
                       variant="contained"
-                      style={{ color: "black", width: "120px", height: "30px" }}
+                      style={{
+                        color: pre === "/POST" ? "white" : "black", // Change text color when active
+                        backgroundColor: pre === "/POST" ? "#1692b4" : "white", // Example change background color when active
+                        width: "120px",
+                        height: "30px",
+                      }}
                       onClick={() => {
                         setPre("/POST");
                       }}
@@ -558,26 +593,15 @@ function Tables() {
           </Typography>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <Typography variant="h6" component="h2" gutterBottom>
-              {formData.survey_type === "PRE" && `${url}/pre-program-form`}
-              {formData.survey_type === "MID" && `${url}/mid-program-form`}
-              {formData.survey_type === "POST" && `${url}/post-program-form`}
+              {formData.survey_type === "PRE" && `www.progrowth.coach/pre-program-form`}
+              {formData.survey_type === "MID" && `www.progrowth.coach/mid-program-form`}
+              {formData.survey_type === "POST" && `www.progrowth.coach/post-program-form`}
             </Typography>
 
             <div>
               <IconButton
                 color="primary"
-                onClick={() => {
-                  let link = "";
-                  if (formData.survey_type === "pre") {
-                    link = `${url}/pre-program-form`;
-                  } else if (formData.survey_type === "mid") {
-                    link = `${url}/mid-program-form`;
-                  } else if (formData.survey_type === "post") {
-                    link = `${url}/post-program-form`;
-                  }
-                  navigator.clipboard.writeText(link); // Copy the link to the clipboard
-                  toast.success("Link Copied Successfully"); // Show success toast
-                }}
+                onClick={handleClick}
                 style={{
                   marginRight: 10,
                   marginBottom: 10,
