@@ -57,25 +57,6 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "All Programs",
-    key: "all-programs",
-    icon: <FaBookmark />,
-    route: "/all-programs",
-    component: <AllPrograms />,
-    isPrivate: true,
-  },
-  {
-    type: "collapse",
-    name: "Program Videos",
-    key: "program-videos",
-    icon: <PlayCircleIcon />,
-    route: "/program-videos",
-    component: <ProgramVideos />,
-    isPrivate: true,
-  },
-
-  {
-    type: "collapse",
     name: "Forgot Password",
     key: "sign-in",
     icon: <VpnKeyIcon />,

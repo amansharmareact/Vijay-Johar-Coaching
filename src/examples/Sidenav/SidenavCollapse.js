@@ -53,20 +53,28 @@ function SidenavCollapse({ icon, name, active, ...rest }) {
             sidenavColor,
           })
         }
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-start",
+        }}
       >
-        <ListItemIcon
-          sx={(theme) =>
-            collapseIconBox(theme, { transparentSidenav, whiteSidenav, darkMode, active })
-          }
+        <span
+          className="col-md-3"
+          style={{
+            color: "black",
+            fontWeight: 500,
+            fontSize: "14px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
-          {typeof icon === "string" ? (
-            <Icon sx={(theme) => collapseIcon(theme, { active })}>{icon}</Icon>
-          ) : (
-            icon
-          )}
-        </ListItemIcon>
+          {icon}
+        </span>
 
-        <ListItemText
+        {/* <ListItemText
+          style={{ color: "black", fontWeight: 600 }}
           primary={name}
           sx={(theme) =>
             collapseText(theme, {
@@ -76,7 +84,20 @@ function SidenavCollapse({ icon, name, active, ...rest }) {
               active,
             })
           }
-        />
+        /> */}
+        <span
+          className="col-md-3"
+          style={{
+            marginLeft: "30px",
+            color: "black",
+            fontWeight: 500,
+            fontSize: "14px",
+            textAlign: "left",
+            width: "100%",
+          }}
+        >
+          {name}
+        </span>
       </MDBox>
     </ListItem>
   );

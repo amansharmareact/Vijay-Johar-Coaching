@@ -14,6 +14,7 @@ import "../../sign-in/SignInForm.css";
 import bgImage from "assets/images/signin-bg.png";
 import { makeStyles } from "@material-ui/core/styles";
 import BasicLayout from "layouts/authentication/components/BasicLayout";
+import axios from "../../../../axios";
 
 const useStyles = makeStyles((theme) => ({
   colorPrimary: {
@@ -38,27 +39,20 @@ const Cover = () => {
 
   const handleResetPassword = async () => {
     setIsLoading(true);
-    const url = "http://13.126.178.112:3000/setNewPassword";
     if (password !== cpassword) {
       toast.error("Passwords do not match");
     } else {
       const formValues = {
         email: email,
-        new_password: password,
+        password: password,
       };
 
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token,
-          },
-          body: JSON.stringify(formValues),
+        const data = await axios.post("/forgotPassword", formValues, {
+          headers: { Authorization: token },
         });
-        const data = await response.json();
-        if (response.status === 401) {
+        if (data.status === 401) {
           localStorage.removeItem("token");
           history("/");
         } else {
@@ -68,7 +62,7 @@ const Cover = () => {
               history("/");
             }, 800);
           } else {
-            toast.error(data.error);
+            toast.error(data.data.error);
           }
         }
       } catch (err) {

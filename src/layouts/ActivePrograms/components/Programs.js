@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Box,
   Card,
@@ -15,6 +15,8 @@ import {
   Button,
 } from "@mui/material";
 import axios from "axios";
+import ReactPlayer from "react-player";
+import JoditEditor from "jodit-react";
 import { makeStyles } from "@material-ui/core/styles";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
@@ -24,7 +26,6 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
-import ReactPlayer from "react-player";
 import TitleBox from "components/TitleBox";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
@@ -58,7 +59,15 @@ const Programs = () => {
   const [checkboxStates, setCheckboxStates] = useState({});
   const calenderRef = useRef(null);
   const history = useNavigate();
-
+  const editor = useRef(null);
+  // const config = useMemo(
+  //   {
+  //     readonly: false, // all options from https://xdsoft.net/jodit/docs/,
+  //     placeholder: placeholder || "Start typings...",
+  //   },
+  //   [placeholder]
+  // );
+  const [content, setContent] = useState("");
   useEffect(() => {
     const getCourseList = async () => {
       try {
@@ -506,6 +515,7 @@ const Programs = () => {
                   boxShadow: 24,
                 }}
               >
+                {console.log(selectedVideo, "selected video")}
                 <ReactPlayer url={selectedVideo} controls width="100%" height="100%" />
               </Box>
             </Modal>

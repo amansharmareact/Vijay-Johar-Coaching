@@ -31,7 +31,7 @@ import Icon from "@mui/material/Icon";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
-
+import logo from "../../assets/images/PROGROWTH.png";
 // Material Dashboard 2 React example components
 import SidenavCollapse from "examples/Sidenav/SidenavCollapse";
 
@@ -66,7 +66,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     }
   }, [userInfo]);
 
-  let textColor = "white";
+  let textColor = "black";
 
   if (transparentSidenav || (whiteSidenav && !darkMode)) {
     textColor = "dark";
@@ -96,38 +96,8 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
     return () => window.removeEventListener("resize", handleMiniSidenav);
   }, [dispatch, location]);
 
-  const handleLogout = async () => {
-    console.log("first");
-    if (window.confirm("Are you sure you want to Logout?")) {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(`/user/logout`, {
-          method: "POST",
-          headers: {
-            Authorization: token,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Logout request failed");
-        }
-
-        // If you need to handle response data, you can do it here
-        // const data = await response.json();
-
-        localStorage.removeItem("token");
-
-        history.push("/");
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
-
-  // Render all the routes from the routes.js (All the visible items on the Sidenav)
   const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, key, href, route }) => {
     let returnValue;
-
     if (type === "collapse") {
       returnValue = href ? (
         <Link
@@ -186,6 +156,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       {...rest}
       variant="permanent"
       ownerState={{ transparentSidenav, whiteSidenav, miniSidenav, darkMode }}
+      style={{ background: "red" }}
     >
       <MDBox pt={3} pb={1} px={4} textAlign="center">
         <MDBox
@@ -229,7 +200,8 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           (darkMode && !transparentSidenav && whiteSidenav)
         }
       />
-      <List>{renderRoutes}</List>
+      <List style={{ color: "black" }}>{renderRoutes}</List>
+      <img src={logo} alt="Logo" />
     </SidenavRoot>
   );
 }

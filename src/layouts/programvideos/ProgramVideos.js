@@ -10,7 +10,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import Typography from "@mui/material/Typography";
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import "../surveylist/data/SurveyList.css";
 import List from "@mui/material/List";
@@ -72,7 +71,6 @@ function ProgramVideos() {
   return (
     <>
       <DashboardLayout>
-        <DashboardNavbar />
         {isLoading ? (
           <Box
             style={{
@@ -108,7 +106,7 @@ function ProgramVideos() {
                                 style={{ color: "#000", marginRight: "5px" }}
                               />
                               <p style={{ fontWeight: "500", color: "black", fontSize: "16px" }}>
-                                {video.title.toUpperCase()}
+                                {video.title && video.title.toUpperCase()}
                               </p>
                             </div>
                           </ListItemButton>

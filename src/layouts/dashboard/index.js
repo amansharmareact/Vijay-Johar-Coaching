@@ -5,7 +5,6 @@ import MDBox from "components/MDBox";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
@@ -56,8 +55,7 @@ function Dashboard() {
   }, []);
   return (
     <DashboardLayout>
-      <DashboardNavbar style={{ position: "sticky" }} />
-      <MDBox py={3} style={{ height: "70vh" }}>
+      <MDBox py={3} style={{ height: "80vh" }}>
         <Grid container>
           <TitleBox>
             <MDTypography variant="h6" color="black" backgroundColor="red">
@@ -106,13 +104,12 @@ function Dashboard() {
               style={{ cursor: "pointer" }}
               onClick={() => {
                 navigate("/archive-programs");
-                console.log("psyhesssss");
               }}
             >
               <MDBox mb={1.5}>
                 <ComplexStatisticsCard
                   icon="leaderboard"
-                  title="Archieve Programs"
+                  title="Archive Programs"
                   count={data?.CompletedProgram?.length}
                 />
               </MDBox>

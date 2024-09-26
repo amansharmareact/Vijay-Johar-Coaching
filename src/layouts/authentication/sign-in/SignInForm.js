@@ -1,19 +1,14 @@
-import React, { useState } from "react";
-import { useHistory, useNavigate } from "react-router-dom";
-import Card from "@mui/material/Card";
-import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
-import MDInput from "components/MDInput";
-import MDButton from "components/MDButton";
-import { Box, Button, CircularProgress, Snackbar } from "@mui/material";
+import { makeStyles } from "@material-ui/core/styles";
+import { CircularProgress } from "@mui/material";
+import bgImage from "assets/images/signin-bg.png";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify"; // Import toast and ToastContainer from react-toastify
 import "react-toastify/dist/ReactToastify.css";
-import { useDispatch } from "react-redux";
 import { saveLoginData } from "../../../Redux/loginSlice";
 import "./SignInForm.css";
-import bgImage from "assets/images/signin-bg.png";
-import { makeStyles } from "@material-ui/core/styles";
-
+import axios from "../../../axios";
 const useStyles = makeStyles((theme) => ({
   colorPrimary: {
     color: "red",
@@ -36,34 +31,27 @@ const SignInForm = () => {
 
   const handleLogin = async () => {
     setIsLoading(true);
-    const url = "http://13.126.178.112:3000/user/login";
     const formValues = {
       email: email,
       password: password,
     };
 
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formValues),
-      });
-      const data = await response.json();
+      const response = await axios.post("/signin", formValues);
+      console.log(response);
       if (response.status === 401) {
         localStorage.removeItem("token");
         history("/");
       } else {
-        if (data && data.token) {
-          localStorage.setItem("token", data.token);
-          dispatch(saveLoginData(data));
+        if (response && response.data.access_Token) {
+          localStorage.setItem("token", response.data.access_Token);
+          dispatch(saveLoginData(response.data.data));
           toast.success("Login Successful");
           setTimeout(() => {
             history("/dashboard");
           }, 800);
         }
-        toast.error(data.error);
+        toast.error(response.error);
       }
     } catch (err) {
       toast.error(err);

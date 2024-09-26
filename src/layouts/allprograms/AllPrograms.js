@@ -10,7 +10,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import Typography from "@mui/material/Typography";
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import "../surveylist/data/SurveyList.css";
 import List from "@mui/material/List";
@@ -23,7 +22,6 @@ import { useState, useEffect } from "react";
 import VideoLibrarySharpIcon from "@mui/icons-material/VideoLibrarySharp";
 import { Box, CircularProgress, Stack, Tab, Tabs } from "@mui/material";
 import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
-import { GrResources } from "react-icons/gr";
 import { FaBookmark } from "react-icons/fa";
 import TitleBox from "components/TitleBox";
 import { makeStyles } from "@material-ui/core/styles";
@@ -111,7 +109,6 @@ function ProgramVideos() {
   return (
     <>
       <DashboardLayout>
-        <DashboardNavbar />
         {isLoading ? (
           <Box
             style={{

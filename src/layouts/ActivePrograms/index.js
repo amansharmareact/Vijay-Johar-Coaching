@@ -5,14 +5,12 @@ import MDBox from "components/MDBox";
 
 // Material Dashboard 2 React examples
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import Programs from "../ActivePrograms/components/Programs";
 
 function Billing() {
   return (
     <DashboardLayout>
-      <DashboardNavbar />
       <MDBox mt={5}>
         <MDBox mb={3}>
           <Grid container spacing={3}>
